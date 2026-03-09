@@ -1,0 +1,41 @@
+---
+title: "Environment variables"
+description: "Configure build-time and runtime variables for your apps."
+---
+
+You'll learn how to add, edit, and manage environment variables for your apps — including the difference between build-time and runtime variables.
+
+## Build variables vs runtime variables
+
+Nixopus supports two types of environment variables:
+
+| Type | Available during | Use case |
+| --- | --- | --- |
+| **Build** | Image build only | API keys for private packages, build flags |
+| **Runtime** | Container execution | Database URLs, secrets, feature flags |
+
+Build variables are injected as `ARG` values during the Docker build. Runtime variables are passed to the container at startup as `ENV` values.
+
+## Adding variables during deploy
+
+When creating an app from the deploy form, you can add environment variables and build variables directly. These are applied to the first deployment.
+
+## Managing variables on an existing app
+
+Open your app from the **Apps** list and go to the **Configuration** tab. You'll see sections for environment variables and build variables. Add, edit, or remove variables and save.
+
+<Warning>
+  Changing environment variables does not automatically redeploy your app. You must trigger a new deployment for changes to take effect.
+</Warning>
+
+## Editing and removing variables
+
+From the **Configuration** tab, click on any variable to edit its value or delete it. Both actions require a redeployment to apply.
+
+## Secrets handling
+
+Variable values are encrypted at rest and masked in the dashboard after saving. Once saved, you can overwrite a secret but you cannot view the original value.
+
+<Tip>
+  Use a `.env.example` file in your repo to document the variables your app needs — without committing actual values.
+</Tip>

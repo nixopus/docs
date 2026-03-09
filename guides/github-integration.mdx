@@ -1,0 +1,57 @@
+---
+title: "GitHub integration"
+description: "Connect your repos and enable auto-deploy."
+---
+
+You'll set up the Nixopus GitHub App, connect repositories, and configure auto-deploy so every push goes live automatically.
+
+## Set up the GitHub App
+
+<Steps>
+  <Step title="Open Apps">
+    Navigate to **Apps** from the sidebar. If you haven't connected GitHub yet, Nixopus prompts you to set up the GitHub App.
+  </Step>
+  <Step title="Create the GitHub App">
+    Follow the setup flow to create a GitHub App on your account or organization. This registers a GitHub App with the permissions Nixopus needs.
+  </Step>
+  <Step title="Install on repositories">
+    Choose which repositories the GitHub App can access. You can grant access to all repos or select specific ones. You can change this later from your GitHub settings.
+  </Step>
+</Steps>
+
+<Note>
+  The GitHub App requires read access to repository contents and metadata, plus webhook access for auto-deploy. Nixopus never stores your source code — it clones at build time and discards after.
+</Note>
+
+## Auto-deploy on push
+
+When you create an app and select a branch, Nixopus registers a webhook on that repository. Every push to the configured branch triggers a new deployment.
+
+To toggle auto-deploy, open your app's **Configuration** tab and update the auto-deploy setting.
+
+When auto-deploy is off, you deploy manually from the **Deployments** tab or via the API.
+
+## Branch selection
+
+Each app deploys from a single branch. To change the branch, open the app's **Configuration** tab and update the branch field.
+
+<Tip>
+  Create separate apps for staging and production — one deploying from `develop`, the other from `main`.
+</Tip>
+
+## One connector at a time
+
+Each organization supports a single GitHub connector. If you need to connect a different GitHub account or organization, delete the existing connector first, then add the new one.
+
+To manage connectors, go to **Apps** and open the connector settings from the repository list. From there you can:
+
+- **Add** a new GitHub connector
+- **Delete** the current connector to switch to a different GitHub account
+
+<Warning>
+  Deleting a connector does not remove your deployed apps, but auto-deploy stops working until a new connector is set up for those repositories.
+</Warning>
+
+## Reconnecting
+
+If you need to re-register the GitHub App (e.g., after removing it from GitHub), go to **Apps** and use the connector settings from the repository list to reconfigure.

@@ -1,0 +1,65 @@
+---
+title: "API Reference"
+description: "Interact with Nixopus programmatically."
+---
+
+The Nixopus API lets you manage projects, deployments, domains, and more through HTTP requests.
+
+## Base URL
+
+<Tabs>
+  <Tab title="Cloud">
+    ```
+    https://api.nixopus.com/api/v1/
+    ```
+  </Tab>
+  <Tab title="Self-hosted">
+    ```
+    https://your-domain.com/api/v1/
+    ```
+
+    Replace `your-domain.com` with the domain you configured during [installation](/self-hosting/installation).
+  </Tab>
+</Tabs>
+
+## Authentication
+
+All API requests require a Bearer token in the `Authorization` header. You can use a session token or an [API key](/cloud/api-keys).
+
+```
+Authorization: Bearer nxp_your_api_key_here
+```
+
+## Organization context
+
+Most endpoints require an `X-Organization-Id` header to scope the request to a specific organization.
+
+```
+X-Organization-Id: org_abc123
+```
+
+## Rate limiting
+
+API requests are rate-limited to **1,000 requests per hour** per API key. When you hit the limit, the API returns `429 Too Many Requests` with a `Retry-After` header.
+
+## Response format
+
+All responses are JSON. Successful responses return a `2xx` status code. Errors return a `4xx` or `5xx` status code with a JSON body containing an `error` field.
+
+```json
+{
+  "error": "Organization not found"
+}
+```
+
+## Example request
+
+```bash
+curl -X GET https://api.nixopus.com/api/v1/deploy/applications \
+  -H "Authorization: Bearer nxp_your_api_key_here" \
+  -H "X-Organization-Id: org_abc123"
+```
+
+## Endpoint reference
+
+Explore the full list of available endpoints in the sidebar. The API reference is auto-generated from our OpenAPI spec and includes request/response schemas and an interactive playground.

@@ -1,0 +1,43 @@
+---
+title: "Containers"
+description: "Manage your running containers."
+---
+
+You'll view, monitor, and control the containers powering your deployments.
+
+## Viewing containers
+
+Open your app from the **Apps** list and go to the **Resources** tab. You'll see a grid of container cards showing each container's status, image, and ports.
+
+The **Charts** page (accessible from the sidebar) also shows all running containers across your machine.
+
+## Container actions
+
+Click on any container card to open the detail view. From there you can:
+
+| Action | What it does |
+| --- | --- |
+| **Start** | Starts a previously stopped container |
+| **Stop** | Gracefully stops the container |
+| **Restart** | Stops and restarts the container with the same configuration |
+| **Delete** | Removes the container entirely |
+
+## Container terminal
+
+From the container detail view, open the **Terminal** tab to get an interactive shell inside the running container. This is useful for debugging, inspecting files, or running one-off commands.
+
+## Images
+
+The container detail view also shows the **Images** tab — all Docker images associated with that container, including repository, tag, and size.
+
+## Logs
+
+For app-level logs, use the **Logs** tab on the app detail page. For deployment-specific logs, open the **Deployments** tab and click on a specific deployment to see its build and runtime output.
+
+<Warning>
+  Stopping a container takes your app offline immediately. Use the deploy flow for zero-downtime updates.
+</Warning>
+
+## Pruning
+
+Configure automatic pruning from the **Settings** modal under the **Container** category. Options include auto-prune images, auto-prune build cache, and configuring stop timeout and restart policy.

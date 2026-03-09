@@ -1,0 +1,77 @@
+---
+title: "Management CLI"
+description: "Manage your self-hosted Nixopus instance from the command line."
+---
+
+After installation, the `nixopus` command is available at `/usr/local/bin/nixopus`. All commands require root.
+
+```bash
+sudo nixopus status
+```
+
+## Commands
+
+| Command | Description |
+| --- | --- |
+| `nixopus status` | Show service health |
+| `nixopus logs [service]` | Tail logs |
+| `nixopus update` | Pull latest images and restart |
+| `nixopus restart [service]` | Restart all or a specific service |
+| `nixopus stop` | Stop all services |
+| `nixopus config` | Show current configuration |
+| `nixopus config set KEY=VALUE` | Update a config value (restart required) |
+| `nixopus domain add <domain>` | Switch to domain-based HTTPS |
+| `nixopus domain remove` | Switch back to IP-based HTTP |
+| `nixopus ip set <ip>` | Change host IP |
+| `nixopus port set <http\|https\|ssh> <port>` | Change a port |
+| `nixopus backup` | Backup database and config |
+| `nixopus uninstall` | Remove containers (keeps data) |
+| `nixopus uninstall --purge` | Remove everything including data |
+
+## Services
+
+When a command accepts a `[service]` argument, use one of:
+
+- `nixopus-api`
+- `nixopus-auth`
+- `nixopus-view`
+- `nixopus-caddy`
+- `nixopus-db`
+- `nixopus-redis`
+
+## Examples
+
+### Check service health
+
+```bash
+nixopus status
+```
+
+### Tail logs for a specific service
+
+```bash
+nixopus logs nixopus-api
+```
+
+### Change the domain
+
+Ensure DNS is configured before running this.
+
+```bash
+nixopus domain add panel.example.com
+nixopus restart
+```
+
+### Switch back to IP mode
+
+```bash
+nixopus domain remove
+nixopus restart
+```
+
+### Update a config value
+
+```bash
+nixopus config set LOG_LEVEL=info
+nixopus restart
+```

@@ -1,0 +1,110 @@
+---
+title: "Configuration"
+description: "Environment variables, ports, firewall, and HTTPS for self-hosted Nixopus."
+---
+
+All parameters are optional. Pass them as environment variables before the install command.
+
+```bash
+DOMAIN=panel.example.com ADMIN_EMAIL=admin@example.com curl -fsSL install.nixopus.com | sudo bash
+```
+
+## Environment variables
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `DOMAIN` | *(empty — IP mode)* | Domain for automatic HTTPS |
+| `HOST_IP` | *(auto-detected)* | Public IP of the machine |
+| `CADDY_HTTP_PORT` | `80` | HTTP port |
+| `CADDY_HTTPS_PORT` | `443` | HTTPS port |
+| `ADMIN_EMAIL` | *(empty)* | Admin account email |
+| `SSH_HOST` | `$HOST_IP` | SSH host the API connects to |
+| `SSH_PORT` | `22` | SSH port (auto-detected from sshd_config if non-standard) |
+| `SSH_USER` | `root` | SSH user |
+| `DB_PASSWORD` | *(random)* | Postgres password |
+| `REDIS_PASSWORD` | *(random)* | Redis password |
+| `DATABASE_URL` | `postgres://nixopus:$DB_PASSWORD@nixopus-db:5432/nixopus` | Full DB connection string. Set to an external URL to skip the bundled DB |
+| `REDIS_URL` | `redis://default:$REDIS_PASSWORD@nixopus-redis:6379` | Full Redis connection string. Set to an external URL to skip bundled Redis |
+| `AUTH_SERVICE_SECRET` | *(random)* | Auth service secret |
+| `JWT_SECRET` | *(random)* | JWT signing secret |
+| `NIXOPUS_HOME` | `/opt/nixopus` | Installation directory |
+| `NIXOPUS_TELEMETRY` | `on` | Set to `off` to disable anonymous telemetry |
+| `LOG_LEVEL` | `debug` | Log level |
+
+## Ports
+
+### Host-bound ports
+
+| Port | Service | Configurable | Notes |
+| --- | --- | --- | --- |
+| `80` | Caddy (HTTP) | `CADDY_HTTP_PORT` | Required for Let's Encrypt HTTPS challenges |
+| `443` | Caddy (HTTPS) | `CADDY_HTTPS_PORT` | TLS termination |
+| `2019` | Caddy admin API | No | Bound to `127.0.0.1` only (not exposed externally) |
+
+### Internal services (Docker network only)
+
+| Port | Service |
+| --- | --- |
+| `9090` | nixopus-auth |
+| `8443` | nixopus-api |
+| `7443` | nixopus-view |
+| `5432` | nixopus-db (bundled Postgres) |
+| `6379` | nixopus-redis (bundled Redis) |
+
+The SSH port on your host (default `22`) must also be accessible from the Docker network — the API connects back to the host via SSH for deployments.
+
+If ports 80/443 are already in use, either stop the conflicting service or install with custom ports:
+
+```bash
+CADDY_HTTP_PORT=8080 CADDY_HTTPS_PORT=8443 curl -fsSL install.nixopus.com | sudo bash
+```
+
+Use `docker ps --format '{{.Ports}} {{.Names}}'` to find what's using a port.
+
+## Firewall
+
+The installer warns about `ufw` and `firewalld` but does not modify firewall rules. You must open the HTTP/HTTPS ports yourself.
+
+<Tabs>
+  <Tab title="ufw (Ubuntu/Debian)">
+    ```bash
+    sudo ufw allow 80/tcp && sudo ufw allow 443/tcp && sudo ufw reload
+    ```
+  </Tab>
+  <Tab title="firewalld (RHEL/Rocky/Alma/Fedora)">
+    ```bash
+    sudo firewall-cmd --permanent --add-port=80/tcp && sudo firewall-cmd --permanent --add-port=443/tcp && sudo firewall-cmd --reload
+    ```
+  </Tab>
+  <Tab title="iptables">
+    ```bash
+    sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT && sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+    ```
+  </Tab>
+</Tabs>
+
+<Warning>
+  **Cloud providers:** Also open ports in your cloud firewall (AWS Security Groups, GCP Firewall Rules, Azure NSG, etc.). These are separate from the OS-level firewall.
+</Warning>
+
+If using custom ports, replace `80`/`443` with your values in all commands above.
+
+## HTTPS
+
+When you provide a `DOMAIN`, Caddy automatically obtains and renews TLS certificates from Let's Encrypt. For this to work:
+
+1. **DNS A record** must point to your machine's public IP *before* installing.
+2. **Port 80 must be open** — Let's Encrypt uses HTTP-01 challenges on port 80, even if you only serve on 443.
+3. **Not behind a proxy** — If using Cloudflare, set to "DNS only" (grey cloud) during initial setup so the challenge can reach your machine directly. You can re-enable proxying after the first certificate is issued.
+
+Without a `DOMAIN`, Nixopus runs in IP mode over plain HTTP.
+
+## Viewing secrets
+
+```bash
+sudo cat /opt/nixopus/.env
+```
+
+<Tip>
+  You can also use `nixopus config` to view the current configuration without reading the raw env file.
+</Tip>

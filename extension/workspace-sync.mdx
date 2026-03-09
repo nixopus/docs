@@ -1,0 +1,32 @@
+---
+title: "Workspace sync"
+description: "Link your workspace to a Nixopus project."
+---
+
+Workspace sync connects your local editor workspace to a Nixopus project. Once linked, the agent knows which project you're working on and can deploy without asking every time.
+
+## Linking
+
+When you open the Nixopus sidebar for the first time, the extension automatically links your workspace. It detects your git remote and branch, syncs your workspace files to the agent, and indexes the codebase so the agent has full context for deployments.
+
+Once an app is created from a deploy, the link is updated to point to that specific Nixopus application. Each branch can map to a different application — the extension tracks this automatically.
+
+To unlink a workspace, run **Nixopus: Unlink Workspace** from the command palette.
+
+## Branch detection
+
+The extension uses VS Code's built-in git integration to detect branch changes. When you switch branches:
+
+- The agent updates its context to the new branch.
+- If you've previously deployed that branch, the extension maps it to the correct Nixopus application automatically.
+- Your workspace files are resynced and re-indexed against the new branch context.
+
+## File sync
+
+The extension watches your workspace for file saves, creates, and deletes. Changes are debounced and synced incrementally to the agent so it always has an up-to-date view of your codebase.
+
+A full sync runs when the workspace is first linked and on branch changes. Common non-source directories (`node_modules`, `.git`, `dist`, `build`, etc.) and binary files are excluded automatically.
+
+<Note>
+  Workspace links are stored in VS Code's workspace state — they don't create any files in your project or affect other team members.
+</Note>

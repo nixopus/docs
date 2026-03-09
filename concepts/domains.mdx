@@ -1,0 +1,46 @@
+---
+title: "Domains"
+description: "How Nixopus handles routing, SSL, and custom domains."
+---
+
+Every app deployed on Nixopus gets HTTPS out of the box. Custom domains work with automatic SSL certificates — no configuration files, no manual renewal.
+
+<Tip>
+  You can manage domains through the [AI Chat](/guides/ai-chat) or the [editor extension](/extension/deploying) — just ask the agent to add or configure a domain and it handles the rest.
+</Tip>
+
+## Domain assignment
+
+When creating or configuring an app, you add domains from the **Configuration** tab. Each app supports up to 5 domains.
+
+<Tabs>
+  <Tab title="Single-service apps">
+    Add domains directly — each domain routes to your app's exposed port.
+  </Tab>
+  <Tab title="Docker Compose apps">
+    Each domain maps to a specific **service** and **port** in your Compose file. This lets you route different domains to different services in the same stack.
+  </Tab>
+</Tabs>
+
+## Automatic HTTPS
+
+Nixopus provisions SSL certificates automatically for every domain:
+
+- **Nixopus Cloud** — certificates are issued at the edge via Let's Encrypt. Zero configuration.
+- **Self-hosted** — Caddy handles certificate provisioning and renewal. As long as your machine is reachable on ports 80 and 443, HTTPS works automatically. See [HTTPS configuration](/self-hosting/configuration#https) for details.
+
+## Nixopus Cloud subdomains
+
+On Nixopus Cloud, every app gets a `*.nixopus.ai` subdomain by default. You can also [add a custom domain](/cloud/custom-domains) on Pro, Team, or Enterprise plans.
+
+## Self-hosted domains
+
+For [self-hosted](/self-hosting/installation) installations, point your domain's DNS (A record) to your machine's IP address. Nixopus detects the domain and configures the reverse proxy automatically.
+
+```
+A   app.example.com   →   your-machine-ip
+```
+
+<Note>
+  Ensure ports 80 and 443 are open on your machine's firewall for SSL certificate issuance to work. See [firewall configuration](/self-hosting/configuration#firewall) for setup instructions.
+</Note>

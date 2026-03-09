@@ -1,0 +1,43 @@
+---
+title: "Backup & Restore"
+description: "Back up and restore your self-hosted Nixopus data."
+---
+
+## Backup
+
+```bash
+nixopus backup
+```
+
+Saves a database dump and a copy of `.env` to `/opt/nixopus/backups/<timestamp>/`.
+
+## Restore
+
+<Steps>
+  <Step title="Restore the environment file">
+    ```bash
+    cp /opt/nixopus/backups/<timestamp>/env.bak /opt/nixopus/.env
+    ```
+  </Step>
+  <Step title="Restart services">
+    Ensure the database container is running before restoring the dump.
+
+    ```bash
+    nixopus restart
+    ```
+  </Step>
+  <Step title="Restore the database dump">
+    ```bash
+    docker exec -i nixopus-db psql -U nixopus nixopus < /opt/nixopus/backups/<timestamp>/db.sql
+    ```
+  </Step>
+</Steps>
+
+## Reset to clean state
+
+Remove everything and start fresh:
+
+```bash
+nixopus uninstall --purge
+curl -fsSL install.nixopus.com | sudo bash
+```

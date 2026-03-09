@@ -1,0 +1,86 @@
+---
+title: Nixopus
+description: Deploy, monitor, and fix — powered by an AI agent.
+---
+
+Connect your repo, tell the agent to deploy, and it handles everything — from analyzing your codebase to generating configs to shipping your app. When something breaks, it reads the logs, creates a fix, and redeploys.
+
+Open source. Self-hostable. No lock-in.
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/getting-started/quickstart">
+    Deploy your first app on Nixopus Cloud.
+  </Card>
+  <Card title="Self-hosting" icon="server" href="/self-hosting/installation">
+    Run Nixopus on your own infrastructure.
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Interact with Nixopus programmatically.
+  </Card>
+  <Card title="Editor Extension" icon="puzzle-piece" href="/extension/overview">
+    Deploy from VS Code or Cursor.
+  </Card>
+</CardGroup>
+
+## What makes Nixopus different
+
+### Deploy → fail → fix → redeploy — without you
+
+On other platforms, a failed deployment means context-switching: read the logs, copy the error to an AI tool, get a fix, push it, redeploy, wait. Repeat until it works.
+
+Nixopus closes that loop. The agent detects the failure, reads the build or container logs, creates a pull request with the fix, and redeploys. You review the PR or let the agent handle it.
+
+### Autonomous monitoring
+
+Deploying on a Friday night shouldn't mean staying up to watch logs. The agent will monitor deployments after they go live — if a container crashes at 2am, it diagnoses the issue, raises a PR, and redeploys while you sleep.
+
+<Info>
+  Autonomous monitoring and self-healing deployments are currently in development.
+</Info>
+
+### Everything through chat
+
+Deploy, add custom domains, check logs, roll back, troubleshoot — one chat interface. From the [dashboard](/guides/ai-chat) or your [editor](/extension/deploying).
+
+<CardGroup cols={2}>
+  <Card title="From the dashboard" icon="message-bot" href="/guides/ai-chat">
+    Deploy and manage through conversation.
+  </Card>
+  <Card title="From your editor" icon="puzzle-piece" href="/extension/deploying">
+    Deploy from VS Code or Cursor.
+  </Card>
+</CardGroup>
+
+### Open source and self-hostable
+
+Fully open source — run on your own machine with the same features as Nixopus Cloud. Your code, your data, your infrastructure.
+
+### Full machine access
+
+[Built-in terminal](/guides/terminal) and [containers](/guides/containers) — direct access to your infrastructure when you need it.
+
+### Multi-machine orchestration
+
+Connect as many machines as you need — 2, 10, or 100 — and manage them all from one place. Multi-machine deployments, load balancing, and automated scaling are on the roadmap.
+
+### No framework lock-in
+
+Anything that runs in a container deploys — Next.js, Django, Rails, Go, FastAPI, or a multi-service stack with Docker Compose.
+
+### No surprise bills
+
+Credit-based pricing — you add credits, spending stops when your balance runs out. Self-hosted is free forever.
+
+## Explore
+
+<CardGroup cols={3}>
+  <Card title="Deploy your first app" icon="play" href="/guides/deploying-apps">
+    Step-by-step deployment guide.
+  </Card>
+  <Card title="AI capabilities" icon="sparkles" href="/guides/ai-chat">
+    What the agent can do for you.
+  </Card>
+  <Card title="Custom domains" icon="globe" href="/concepts/domains">
+    Connect your domain with auto HTTPS.
+  </Card>
+</CardGroup>

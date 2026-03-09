@@ -1,0 +1,38 @@
+---
+title: "Organizations"
+description: "Manage teams and access control."
+---
+
+Organizations are the top-level container for everything in Nixopus — projects, apps, domains, and team members all belong to an organization.
+
+## Default organization
+
+Every user gets a default organization when they sign up. You can start deploying immediately without any setup. If you're a solo developer, this is all you need.
+
+## Roles
+
+Each organization member has one of three roles:
+
+| Role | Permissions |
+|------|------------|
+| **Owner** | Full access. Manage billing, members, and all resources. Cannot be removed. |
+| **Admin** | Manage projects, deployments, and domains. Can invite and remove members. |
+| **Member** | Deploy apps and manage assigned projects. Cannot change org settings. |
+
+<Note>
+  The user who creates an organization is automatically the owner. Ownership cannot be transferred.
+</Note>
+
+## Invitations
+
+<Tabs>
+  <Tab title="Cloud">
+    Invite team members by email. They receive a link to join your organization with the role you assign. Invitations expire after 7 days.
+  </Tab>
+  <Tab title="Self-hosted">
+    Invitations are disabled on self-hosted instances.
+    <Info>
+      Self-hosted instances are typically used by a single team with direct machine access, so the invitation flow is unnecessary.
+    </Info>
+  </Tab>
+</Tabs>

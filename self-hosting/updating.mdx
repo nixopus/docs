@@ -1,0 +1,26 @@
+---
+title: "Updating"
+description: "Keep your self-hosted Nixopus instance up to date."
+---
+
+## Quick update
+
+Pull the latest Docker images and restart:
+
+```bash
+nixopus update
+```
+
+This pulls new images and restarts services. It does **not** update Docker Compose files, the Caddyfile, or the CLI itself.
+
+## Full upgrade
+
+For a full upgrade (new compose files, CLI, and configuration), re-run the installer. Secrets and config are preserved automatically:
+
+```bash
+curl -fsSL install.nixopus.com | sudo bash
+```
+
+<Note>
+  Check the [release notes on GitHub](https://github.com/nixopus/nixopus/releases) for any manual steps required between versions (database migrations, new required environment variables, etc.).
+</Note>

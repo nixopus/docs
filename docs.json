@@ -1,0 +1,182 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "Nixopus",
+  "theme": "mint",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#000000",
+    "light": "#FFFFFF",
+    "dark": "#18181B"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Pricing",
+        "href": "https://nixopus.com/pricing"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Go Live",
+      "href": "https://dashboard.nixopus.com"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/nixopus",
+      "github": "https://github.com/nixopus",
+      "discord": "https://discord.gg/nixopus"
+    },
+    "links": [
+      {
+        "header": "Product",
+        "items": [
+          { "label": "Changelog", "href": "/changelog" },
+          { "label": "Pricing", "href": "https://nixopus.com/pricing" },
+          { "label": "GitHub", "href": "https://github.com/nixopus/nixopus" }
+        ]
+      },
+      {
+        "header": "Legal",
+        "items": [
+          { "label": "Terms of Service", "href": "https://nixopus.com/terms" },
+          { "label": "Privacy Policy", "href": "https://nixopus.com/privacy" },
+          { "label": "License", "href": "/license" }
+        ]
+      },
+      {
+        "header": "Community",
+        "items": [
+          { "label": "Sponsor Us", "href": "https://github.com/sponsors/nixopus" },
+          { "label": "Contributing", "href": "https://github.com/nixopus/nixopus/blob/master/CONTRIBUTING.md" },
+          { "label": "Discord", "href": "https://discord.gg/nixopus" }
+        ]
+      }
+    ]
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "getting-started/introduction",
+              "getting-started/quickstart"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/deploying-apps",
+              "guides/ai-chat",
+              "guides/github-integration",
+              "guides/notifications",
+              "guides/extensions"
+            ]
+          },
+          {
+            "group": "Advanced",
+            "pages": [
+              "guides/environment-variables",
+              "guides/docker-compose",
+              "guides/containers",
+              "guides/charts",
+              "guides/terminal",
+              "guides/health-checks"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/authentication",
+              "concepts/organizations",
+              "concepts/deployments",
+              "concepts/domains"
+            ]
+          },
+          {
+            "group": "Cloud",
+            "pages": [
+              "cloud/machines",
+              "cloud/credits",
+              "cloud/api-keys",
+              "cloud/custom-domains",
+              "cloud/teams"
+            ]
+          },
+          {
+            "group": "Self-Hosting",
+            "pages": [
+              "self-hosting/installation",
+              "self-hosting/configuration",
+              "self-hosting/management-cli",
+              "self-hosting/updating",
+              "self-hosting/backup-and-restore",
+              "self-hosting/troubleshooting"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "contributing",
+              "code-of-conduct",
+              "license",
+              "changelog"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "openapi": "https://raw.githubusercontent.com/nixopus/nixopus/master/api/doc/openapi.json",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Editor Extension",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "extension/overview",
+              "extension/installation",
+              "extension/authentication"
+            ]
+          },
+          {
+            "group": "Usage",
+            "pages": [
+              "extension/chat-interface",
+              "extension/deploying",
+              "extension/workspace-sync"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "integrations": {
+    "posthog": {
+      "apiKey": "phc_CrWnwEkrAEQVP3x8kC6El7kiYb4yrNK6KISWLfMRo9Z",
+      "apiHost": "https://eu.i.posthog.com",
+      "sessionRecording": true
+    }
+  },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    }
+  }
+}

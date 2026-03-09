@@ -1,0 +1,89 @@
+---
+title: "Multi-service apps"
+description: "Deploy multi-service apps with Docker Compose."
+---
+
+Deploy multi-service applications using Docker Compose — databases, caches, workers, and your app, all defined in a single file.
+
+<Tip>
+  **Don't want to write Compose files yourself?** The [AI Chat](/guides/ai-chat) and [editor extension](/extension/deploying) can analyze your codebase, generate a `docker-compose.yml`, and deploy it for you. This guide is for when you want full control over the Compose configuration.
+</Tip>
+
+## When to use Compose
+
+Use the Docker Compose build pack when your app needs multiple services running together:
+
+- A web app with a database and Redis cache
+- A backend API with a background worker
+- A microservices stack with shared networking
+
+For single-service apps, the standard Dockerfile build pack is simpler.
+
+## Set up your Compose file
+
+Your repository needs a `docker-compose.yml` (or `compose.yml`) at the root. Here's a typical structure:
+
+```yaml
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://db:5432/app
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:16
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+
+  redis:
+    image: redis:7-alpine
+
+volumes:
+  pgdata:
+```
+
+## Deploy with Compose
+
+<Steps>
+  <Step title="Select the Compose build pack">
+    When adding an app, choose **Docker Compose** as the build pack. Nixopus detects your `docker-compose.yml` and parses the service definitions.
+  </Step>
+  <Step title="Configure environment variables">
+    Add any variables your services reference (like `DB_PASSWORD` above). These are injected into the Compose environment at runtime.
+
+    See [environment variables](/guides/environment-variables) for details on build vs runtime variables.
+  </Step>
+  <Step title="Deploy">
+    Click **Deploy**. Nixopus runs `docker compose up` on your target machine, building images and starting all services.
+  </Step>
+</Steps>
+
+## Service networking
+
+All services in a Compose deployment share a Docker network. Services reference each other by name — `db`, `redis`, `web` — exactly as defined in your Compose file.
+
+<Note>
+  Only services with explicit `ports` mappings are exposed externally. Internal services (databases, caches) stay private within the Docker network.
+</Note>
+
+## Port mapping
+
+Nixopus routes external traffic to the port you configure for your app. Make sure your main service exposes the correct port in the `ports` section of your Compose file.
+
+If your Compose file has multiple services with exposed ports, Nixopus routes to the primary service — the one you designate when creating the app.
+
+## Environment variables per service
+
+Variables set in the Nixopus dashboard are available to all services via Compose's `environment` or `env_file` directives. To scope a variable to a specific service, reference it in that service's `environment` block.
+
+<Tip>
+  Use `depends_on` with health check conditions to control startup order and avoid race conditions between services.
+</Tip>

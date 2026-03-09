@@ -1,0 +1,26 @@
+---
+title: "Deploying from your editor"
+description: "Go live without leaving your editor."
+---
+
+The deploy agent handles the full deployment pipeline inside your editor. You tell it to deploy — it analyzes, configures, builds, and ships.
+
+## The deploy flow
+
+<Steps>
+  <Step title="Start a deploy">
+    Open the Nixopus chat and type something like "deploy this project" or "go live."
+  </Step>
+  <Step title="Codebase analysis">
+    The agent scans your workspace — framework detection, dependency analysis, service discovery. It figures out what you're building and how to deploy it.
+  </Step>
+  <Step title="Configuration generation">
+    Based on the analysis, the agent generates a Dockerfile and any required compose configuration. If a Dockerfile already exists, it uses that.
+  </Step>
+  <Step title="Project creation">
+    The agent creates a project on Nixopus (or uses an existing linked project) and pushes your configuration.
+  </Step>
+  <Step title="Deploy">
+    Your app is built, deployed, and given a live URL with HTTPS. The agent streams build logs in the chat so you can follow along.
+  </Step>
+</Steps>

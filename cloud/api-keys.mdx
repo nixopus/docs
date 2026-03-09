@@ -1,0 +1,43 @@
+---
+title: "API keys"
+description: "Create and manage API keys for programmatic access."
+---
+
+<Info>
+  API keys are available on **Nixopus Cloud** Pro, Team, and Enterprise plans.
+</Info>
+
+API keys let you authenticate with the Nixopus API without a session token. Use them for CI/CD pipelines, scripts, and integrations.
+
+## Key format
+
+All Nixopus API keys use the `nxp_` prefix. If a key doesn't start with `nxp_`, it's not a valid Nixopus key.
+
+## Rate limits
+
+API keys are rate-limited to **1,000 requests per hour**. If you exceed this limit, the API returns a `429 Too Many Requests` response. The `Retry-After` header indicates when you can resume.
+
+## Create an API key
+
+<Steps>
+  <Step title="Open API Keys">
+    Click **API Keys** in the sidebar.
+  </Step>
+  <Step title="Generate a new key">
+    Click **Create API Key**. Give it a descriptive name (e.g., `ci-pipeline` or `deploy-bot`).
+  </Step>
+  <Step title="Set an expiry">
+    Choose an expiry period or select no expiry for keys that should remain valid indefinitely.
+  </Step>
+  <Step title="Copy your key">
+    Copy the key immediately. It's only displayed once — Nixopus doesn't store the full key after creation.
+  </Step>
+</Steps>
+
+## Managing keys
+
+From the **API Keys** page, you can rename or delete any key. Deleting a key revokes it immediately.
+
+<Warning>
+  Treat API keys like passwords. Don't commit them to version control or share them in plaintext. Use environment variables or a secrets manager.
+</Warning>

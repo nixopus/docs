@@ -1,0 +1,43 @@
+---
+title: "Notifications"
+description: "Get alerted about deployments and events."
+---
+
+You'll configure notification channels and preferences so your team stays informed about deployments, failures, and system events.
+
+## Open notification settings
+
+Click **Settings** in the sidebar footer to open the settings modal. Select **Notifications** from the categories.
+
+## Channels
+
+The **Channels** tab lets you configure where notifications are sent:
+
+<Tabs>
+  <Tab title="Email (SMTP)">
+    Configure your SMTP provider to send email notifications. Fill in host, port, username, password, from address, and encryption settings.
+
+    <Note>
+      For Gmail, use an [App Password](https://support.google.com/accounts/answer/185833) instead of your account password.
+    </Note>
+  </Tab>
+  <Tab title="Slack">
+    Connect a Slack workspace to receive deployment notifications in a channel.
+  </Tab>
+  <Tab title="Discord">
+    Connect a Discord server to receive deployment notifications via webhook.
+  </Tab>
+</Tabs>
+
+## Preferences
+
+Switch to the **Preferences** tab to control which notifications you receive. Preferences are grouped into:
+
+- **Activity notifications** — Deploy started, deploy succeeded, deploy failed, and other deployment events.
+- **Security notifications** — Login alerts, password changes, and other security events.
+
+Each user in your organization controls their own preferences independently.
+
+<Tip>
+  Set up Slack or Discord for team-wide visibility, and use email for on-call engineers who need direct alerts.
+</Tip>

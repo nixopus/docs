@@ -1,0 +1,46 @@
+name: Sync Changelog
+
+on:
+  repository_dispatch:
+    types: [changelog-updated]
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout docs repo
+        uses: actions/checkout@v4
+
+      - name: Fetch CHANGELOG.md from nixopus/nixopus
+        run: |
+          curl -fsSL \
+            "https://raw.githubusercontent.com/nixopus/nixopus/master/CHANGELOG.md" \
+            -o /tmp/CHANGELOG.md
+
+      - name: Convert to Mintlify changelog page
+        run: |
+          {
+            echo '---'
+            echo 'title: "Changelog"'
+            echo 'description: "Product updates, new features, and bug fixes."'
+            echo '---'
+            echo ''
+            tail -n +2 /tmp/CHANGELOG.md
+          } > changelog.mdx
+
+      - name: Check for changes
+        id: diff
+        run: |
+          git diff --quiet changelog.mdx && echo "changed=false" >> "$GITHUB_OUTPUT" || echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add changelog.mdx
+          git commit -m "chore: sync changelog from nixopus/nixopus"
+          git push

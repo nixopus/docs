@@ -1,0 +1,58 @@
+---
+title: "Custom domains"
+description: "Connect your own domain to Nixopus Cloud."
+---
+
+<Info>
+  Custom domains are available on **Nixopus Cloud** Pro, Team, and Enterprise plans.
+</Info>
+
+Every app on Nixopus Cloud gets a `*.nixopus.ai` subdomain automatically. You can also connect your own domain for a branded experience.
+
+## Add a custom domain
+
+<Steps>
+  <Step title="Open Domains">
+    Click **Domains** in the sidebar.
+  </Step>
+  <Step title="Add your domain">
+    Click **Add Domain** and enter your domain name (e.g., `app.yourcompany.com`).
+  </Step>
+  <Step title="Configure DNS">
+    Nixopus shows a DNS setup wizard. Create a **CNAME** record (for subdomains) or an **ALIAS/ANAME** record (for root domains) pointing to the target Nixopus provides.
+
+    | Record type | Name | Value |
+    | --- | --- | --- |
+    | **CNAME** | `app` | Provided by Nixopus |
+    | **ALIAS** / **ANAME** | `@` | Provided by Nixopus |
+  </Step>
+  <Step title="Verify">
+    Click **Verify** to check DNS propagation. Once verified, Nixopus issues an SSL certificate automatically via Let's Encrypt.
+  </Step>
+</Steps>
+
+## Domain status
+
+Each domain shows a status badge:
+
+| Status | Meaning |
+| --- | --- |
+| **Pending** | DNS not yet verified |
+| **Active** | DNS verified, SSL issued, traffic routing |
+| **Error** | DNS misconfigured or SSL provisioning failed |
+
+Use the **Refresh** action to re-check DNS and SSL status at any time.
+
+## How it works
+
+Nixopus Cloud runs an edge layer that routes traffic to your environment. When a request hits your custom domain:
+
+1. The edge resolves it to your environment based on the DNS record.
+2. SSL is terminated at the edge with an auto-provisioned certificate.
+3. Traffic is forwarded to your running container.
+
+Certificate renewal is automatic — you don't manage it.
+
+## Removing a domain
+
+From the **Domains** page, click **Remove** on any domain. Traffic to that domain stops immediately. Don't forget to clean up the DNS record on your registrar.

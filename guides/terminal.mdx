@@ -1,0 +1,36 @@
+---
+title: "Terminal"
+description: "Access a built-in terminal directly from the dashboard."
+---
+
+Nixopus includes a built-in terminal panel in the dashboard. Run commands on your machine, debug containers, or inspect files without leaving the browser.
+
+## Open the terminal
+
+Toggle the terminal panel with the button in the top bar, or press **Ctrl+J** (Cmd+J on macOS). The panel slides up from the bottom of the screen.
+
+Press **Ctrl+T** to switch the terminal's position between bottom and right.
+
+## Multiple sessions
+
+You can open multiple terminal sessions and switch between them using the tab bar in the terminal panel. Each session maintains its own working directory and state.
+
+## Terminal settings
+
+Open the **Settings** modal and select **Terminal** to customize:
+
+| Setting | Description |
+| --- | --- |
+| **Scrollback** | Number of lines kept in the scroll buffer |
+| **Font size** | Terminal text size |
+| **Font family** | Monospace font for the terminal |
+| **Cursor style** | Block, underline, or bar cursor |
+| **Line height** | Vertical spacing between lines |
+
+## Container terminal vs machine terminal
+
+The terminal panel gives you shell access to your **machine**. To open a shell **inside a running container**, go to your app's **Resources** tab, click on a container, and open the **Terminal** tab in the container detail view.
+
+<Tip>
+  Use the machine terminal for Docker commands like `docker logs`, `docker exec`, or checking disk usage. Use the container terminal for app-level debugging inside the running container.
+</Tip>

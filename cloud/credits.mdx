@@ -1,0 +1,72 @@
+---
+title: "Credits"
+description: "How usage works on Nixopus."
+---
+
+<Info>
+  Credits apply to **Nixopus Cloud** only. [Self-hosted](/self-hosting/installation) instances have no credit system.
+</Info>
+
+Credits are how your apps run on Nixopus. No machines to manage, no infrastructure to think about — just usage that keeps everything live.
+
+## What credits are
+
+There are two types of credits on Nixopus:
+
+- **Usage Credits** — prepaid credits you purchase to run your apps and use the AI agent.
+- **Promotional Credits** — free credits granted by Nixopus from time to time.
+
+## What uses credits
+
+Credits are debited for two categories of usage:
+
+### AI agent usage
+
+Every interaction with the AI agent — deploying, diagnosing, generating configs, or managing resources — costs credits based on the model used and tokens consumed.
+
+Different models have different per-token rates. Nixopus selects the right model for the task, but you can also choose manually. Usage is tracked per-request with full transparency:
+
+| Detail | What you see |
+|--------|-------------|
+| **Model** | Which AI model handled the request (e.g., `anthropic/claude-sonnet-4.5`, `openai/gpt-4.1`) |
+| **Input / Output tokens** | How many tokens were sent and received |
+| **Cached tokens** | Tokens served from cache (cheaper) |
+| **Cost** | Exact dollar amount debited from your balance |
+
+### Machine usage
+
+Your apps run on dedicated compute. Machine usage is billed based on the resources allocated to your environment — CPU, memory, storage, and bandwidth. These are debited from your credit balance continuously while your environment is active.
+
+## Billing dashboard
+
+Everything is visible from **Billing** in the sidebar. The billing page shows:
+
+- **Wallet** — your current credit balance with top-up and auto top-up controls
+- **Cost by Model** — breakdown of AI spending across models
+- **Spending Over Time** — chart of daily spending with 7-day, 30-day, and 90-day views
+- **Usage Details** — per-request log with date, model, token counts, cost, and latency
+- **Transactions** — full ledger of every debit and credit with running balance
+
+## Top up credits
+
+From the **Billing** page, click **Top Up** to purchase credits. Purchases are added to your balance immediately.
+
+### Auto top-up
+
+Enable automatic top-ups so your balance recharges when it runs low. This uses your saved payment method and can be turned off at any time from the billing page. Your apps never go down unexpectedly — auto top-up keeps them running.
+
+## Expiry
+
+- **Usage credits** expire 12 months after purchase.
+- **Promotional credits** expire as specified at the time of issue, or after 12 months — whichever comes first.
+- All credits are forfeited upon account closure.
+
+## Non-refundable
+
+Credits are not refundable, have no cash value, and are not currency. They exist solely to power your apps on Nixopus.
+
+Credits cannot be sold, traded, or transferred. They are tied to a single Nixopus account.
+
+<Note>
+  For full pricing details, see [nixopus.com/pricing](https://nixopus.com/pricing).
+</Note>

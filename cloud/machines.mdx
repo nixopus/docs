@@ -1,0 +1,103 @@
+---
+title: "Machines"
+description: "How machines are provisioned, managed, and scaled on Nixopus Cloud."
+---
+
+<Info>
+  Machines are a **Nixopus Cloud** concept. [Self-hosted](/self-hosting/installation) users manage their own infrastructure directly.
+</Info>
+
+A machine is the dedicated compute environment where your apps run. Each machine has its own CPU, memory, storage, and networking — fully isolated from other users.
+
+## Provisioning
+
+When you sign up and create your first organization, Nixopus automatically provisions a machine for you. There's nothing to configure — the platform detects that you don't have a machine yet and starts the provisioning process.
+
+### What happens behind the scenes
+
+1. **Initializing** — Nixopus allocates resources for your machine.
+2. **Creating machine** — The compute environment is created and configured.
+3. **Configuring SSH** — Secure access is set up so you can use the built-in terminal.
+4. **Setting up networking** — Port forwarding, reverse proxy, and your `*.nixopus.ai` subdomain are configured.
+5. **Verifying** — Nixopus confirms the machine is reachable and healthy.
+6. **Complete** — Your machine is ready. You'll see a notification: "Your machine is ready!"
+
+Provisioning typically takes under a minute. If it fails, you can retry from the dashboard — Nixopus will pick up where it left off.
+
+## Machine states
+
+Your machine can be in one of these states:
+
+| State | Description |
+|-------|-------------|
+| **Provisioning** | Machine is being set up for the first time. |
+| **Running** | Machine is active and serving your apps. |
+| **Paused** | Machine is suspended. Apps are not accessible. No compute is consumed. |
+| **Stopped** | Machine is shut down. Data is preserved. |
+| **Failed** | Provisioning or a lifecycle action failed. Retry from the dashboard. |
+
+The current state is always visible on your machine card in the dashboard.
+
+## Lifecycle actions
+
+You can manage your machine from the actions menu on the machine card:
+
+### Restart
+
+Restarts the machine. Use this if your apps are behaving unexpectedly or after configuration changes that require a fresh start. Your apps will experience brief downtime during the restart.
+
+<Warning>
+  If your apps are crashing due to out-of-memory (OOM) errors, restart the machine to reclaim memory. If it keeps happening, your workload may need more resources — see [Upgrading](#upgrading).
+</Warning>
+
+### Pause
+
+Suspends the machine. Your apps stop serving traffic and no compute is consumed while paused. Data and configuration are preserved. Use this when you're not actively using the machine and want to save credits.
+
+### Resume
+
+Brings a paused machine back to the **Running** state. Your apps become accessible again within seconds.
+
+## Machine resources
+
+Each machine comes with allocated resources based on your plan:
+
+| Resource | Pro |
+|----------|-----|
+| **vCPU** | 2 |
+| **Memory** | 2 GB |
+| **Storage** | 25 GB |
+| **Bandwidth** | 1 TB |
+
+Resources are dedicated to your machine — not shared with other users.
+
+### Upgrading
+
+Need more CPU, memory, or storage? Contact us at [raghav@nixopus.com](mailto:raghav@nixopus.com) with your organization name and the resources you need. Self-service machine upgrades are on the roadmap.
+
+## Adding machines
+
+<Info>
+  Multi-machine support is coming soon.
+</Info>
+
+Nixopus is designed to support multiple machines per organization. You'll be able to add machines in different regions, distribute apps across them, and manage your fleet from one dashboard.
+
+Planned capabilities:
+
+- **Add machines** — spin up additional machines from the dashboard
+- **Replicate** — duplicate an existing machine's configuration to a new instance
+- **Multi-region** — deploy machines across regions for lower latency
+- **Load balancing** — distribute traffic across machines automatically
+
+Want early access to multi-machine features? Reach out at [raghav@nixopus.com](mailto:raghav@nixopus.com).
+
+## Machine billing
+
+Machine usage is part of your Nixopus Cloud plan. Your subscription covers the compute resources allocated to your machine. See [credits](/cloud/credits) for how usage billing works.
+
+When your machine is **paused**, no compute is consumed — only storage is retained.
+
+<Note>
+  For plan details and pricing, see [nixopus.com/pricing](https://nixopus.com/pricing).
+</Note>

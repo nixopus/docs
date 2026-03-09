@@ -1,0 +1,43 @@
+---
+title: "Health checks"
+description: "Monitor your apps and catch issues early."
+---
+
+You'll enable health checks on your apps to detect downtime, track availability history, and get alerted when something breaks.
+
+## Enable health checks
+
+Open your app from the **Apps** list and go to the **Monitoring** tab. You'll see the **Health Check** card in the monitoring grid.
+
+Click on it to configure:
+
+| Setting | Description |
+| --- | --- |
+| **Endpoint** | The path Nixopus hits to check health (e.g., `/health`) |
+| **Method** | HTTP method — GET, POST, or HEAD |
+| **Interval** | How often the check runs (in seconds) |
+| **Timeout** | Max wait time before marking as failed |
+| **Enabled** | Toggle the health check on or off |
+
+<Tip>
+  Create a dedicated `/health` or `/healthz` endpoint in your app that checks database connectivity and critical dependencies — not just returns 200.
+</Tip>
+
+## Viewing results
+
+The Monitoring tab shows a health check chart with response times and status over time:
+
+- **Green** — App responded with a 2xx status within the timeout.
+- **Red** — App failed to respond or returned a non-2xx status.
+
+The monitoring grid also shows a **Deployment Health Chart** and **Deployment Overview** for a full picture of your app's status.
+
+## Automatic alerts
+
+When a health check fails, Nixopus triggers notifications through your configured channels (email, Slack, Discord).
+
+See [notifications](/guides/notifications) to set up alerting.
+
+<Note>
+  Health checks run from the Nixopus control plane, not from within your container. This means they verify external accessibility, not just process liveness.
+</Note>

@@ -1,0 +1,26 @@
+---
+title: "Authentication"
+description: "Sign in to Nixopus from your editor."
+---
+
+The extension uses a device authorization flow to connect your Nixopus account. You approve the connection in your browser — no passwords or tokens pasted into the editor.
+
+<Steps>
+  <Step title="Open the Nixopus sidebar">
+    Click the Nixopus icon in the activity bar. If you're not signed in, you'll see a **Sign In with Browser** button.
+  </Step>
+  <Step title="Authorize in your browser">
+    Click the button. Your browser opens to the Nixopus authorization page. A device code is displayed in the sidebar — enter it in your browser to confirm.
+  </Step>
+  <Step title="Done">
+    Once approved, the extension is authenticated. You can close the browser tab and return to your editor.
+  </Step>
+</Steps>
+
+<Note>
+  Self-hosted users authenticate with email and password by default.
+</Note>
+
+<Note>
+  Sessions persist across editor restarts. You only need to sign in again if you explicitly sign out or your session expires.
+</Note>

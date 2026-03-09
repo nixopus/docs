@@ -1,0 +1,43 @@
+---
+title: "Quickstart"
+description: "Deploy your first app on Nixopus Cloud."
+---
+
+<Steps>
+  <Step title="Sign up">
+    Create your account at [dashboard.nixopus.com](https://dashboard.nixopus.com). No credit card required.
+  </Step>
+  <Step title="Get your environment">
+    Nixopus provisions a dedicated, isolated environment for your organization. Once ready, your environment gets a subdomain at `*.nixopus.ai` with HTTPS enabled automatically.
+  </Step>
+  <Step title="Connect your repo">
+    Link your GitHub account and select the repository you want to deploy. See the [GitHub integration guide](/guides/github-integration) for details.
+  </Step>
+  <Step title="Deploy">
+    Selecting a repo takes you to the AI chat with a pre-filled prompt. Hit **Enter** — the agent analyzes your codebase, generates the build config, and deploys your app.
+
+    Your app is live at your `*.nixopus.ai` subdomain with HTTPS.
+  </Step>
+</Steps>
+
+<Tip>
+  You can also deploy from VS Code or Cursor using the [editor extension](/extension/overview) — open the chat and say "deploy this project."
+</Tip>
+
+<Note>
+  Running on your own machine? See the [self-hosting guide](/self-hosting/installation).
+</Note>
+
+## What you get
+
+Every deployment on Nixopus Cloud comes with:
+
+- **Dedicated environment** — your own isolated machine, provisioned automatically
+- **Auto HTTPS** — SSL provisioned and renewed via Let's Encrypt
+- **`*.nixopus.ai` subdomain** — a live URL from the moment you deploy
+- **AI agent** — [deploy, troubleshoot, and manage](/guides/ai-chat) through conversation
+- **SSH access** — connect directly to your environment for debugging
+- **Custom domains** — attach your own domain with automatic DNS verification and SSL
+- **Instant rollbacks** — one-click rollback to any previous deployment
+- **Deploy logs** — stream build and runtime logs in real time
+- **Resource scaling** — upgrade CPU, memory, and disk as your app grows

@@ -1,0 +1,143 @@
+---
+title: "Troubleshooting"
+description: "Common issues and fixes for self-hosted Nixopus."
+---
+
+<AccordionGroup>
+  <Accordion title="Services fail to start after reinstall">
+    **Symptom:** `nixopus-auth` or `nixopus-api` crash-loop with database authentication errors.
+
+    **Cause:** Containers were removed but Docker volumes still hold the old database with the original password. The reinstall generated new credentials that don't match.
+
+    **Fix:**
+
+    ```bash
+    # Option 1: Use the original password from the backup
+    cat /opt/nixopus/.env.bak | grep DB_PASSWORD
+    DB_PASSWORD=<original_password> curl -fsSL install.nixopus.com | sudo bash
+
+    # Option 2: Start fresh (destroys all data)
+    docker volume rm $(docker volume ls -q --filter name=nixopus)
+    curl -fsSL install.nixopus.com | sudo bash
+    ```
+  </Accordion>
+
+  <Accordion title="Health check timeout during install">
+    **Symptom:** Installer hangs at "Waiting for services to start..." and times out after 180s.
+
+    **Fix:** Check which service is unhealthy:
+
+    ```bash
+    nixopus status
+    nixopus logs
+    ```
+
+    Common causes: port conflict (see [Ports](/self-hosting/configuration#ports)), DNS not configured (see [HTTPS](/self-hosting/configuration#https)), or insufficient resources (see [Requirements](/self-hosting/installation#requirements)).
+  </Accordion>
+
+  <Accordion title="Cannot access the dashboard">
+    **Symptom:** Browser shows connection refused or timeout.
+
+    **Fix:**
+
+    1. Verify services are running: `nixopus status`
+    2. Check ports: `nixopus config`
+    3. Ensure firewall rules are in place (see [Firewall](/self-hosting/configuration#firewall))
+    4. If behind a cloud provider, check the security group / firewall rules in your cloud console
+  </Accordion>
+
+  <Accordion title="Deployments failing (SSH connection errors)">
+    **Symptom:** Deploys fail with SSH connection refused or permission denied.
+
+    The API container SSH-es back into the host to manage deployments. This requires:
+
+    1. SSH service running on the host on the configured port (`SSH_PORT`, default `22`)
+    2. The Nixopus SSH public key in the host's `~/.ssh/authorized_keys`
+    3. The host reachable from the Docker network
+
+    **Fix:**
+
+    ```bash
+    # Verify the key is in authorized_keys
+    grep -q "$(cat /opt/nixopus/ssh/id_rsa.pub)" ~/.ssh/authorized_keys || \
+      cat /opt/nixopus/ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+    # Test SSH from the API container
+    docker exec nixopus-api ssh -i /etc/nixopus/ssh/id_rsa \
+      -p ${SSH_PORT:-22} -o StrictHostKeyChecking=no \
+      ${SSH_USER:-root}@${SSH_HOST} echo ok
+    ```
+  </Accordion>
+
+  <Accordion title="SELinux blocking services (RHEL/Rocky/Alma)">
+    **Symptom:** Containers fail to start or can't access mounted volumes on RHEL-based systems.
+
+    **Fix:**
+
+    ```bash
+    # Check if SELinux is enforcing
+    getenforce
+
+    # Option 1: Allow Docker to access the volume (recommended)
+    chcon -Rt svirt_sandbox_file_t /opt/nixopus
+
+    # Option 2: Set SELinux to permissive (less secure)
+    setenforce 0
+    ```
+  </Accordion>
+
+  <Accordion title="Disk space running out">
+    Container logs are capped at 10MB per service (30MB with rotation). If disk still fills up:
+
+    ```bash
+    # Docker disk usage
+    docker system df
+
+    # Clean unused images and build cache
+    docker system prune -f
+
+    # Check Postgres data size
+    docker exec nixopus-db psql -U nixopus \
+      -c "SELECT pg_size_pretty(pg_database_size('nixopus'));"
+    ```
+  </Accordion>
+
+  <Accordion title="Services not starting after machine reboot">
+    Services use `restart: unless-stopped`, so they start automatically with Docker. If they don't:
+
+    ```bash
+    # Ensure Docker starts on boot
+    sudo systemctl enable docker
+
+    # Start services manually
+    nixopus restart
+    ```
+  </Accordion>
+
+  <Accordion title="Out of memory (OOM) — containers killed">
+    **Symptom:** Apps crash unexpectedly, containers restart, or `docker inspect` shows `OOMKilled: true`.
+
+    **Cause:** A container exceeded its memory limit or the machine ran out of available memory.
+
+    **Fix:**
+
+    1. Restart the machine to reclaim memory:
+       ```bash
+       nixopus restart
+       ```
+    2. Check which containers are consuming the most memory:
+       ```bash
+       docker stats --no-stream --format "table {{.Name}}\t{{.MemUsage}}"
+       ```
+    3. If the issue persists, your workload may need more resources. Consider upgrading your machine — see [machine resources](/cloud/machines#machine-resources) for Nixopus Cloud, or add more RAM to your VPS for self-hosted.
+  </Accordion>
+
+  <Accordion title="Domain or SSL issues">
+    **Symptom:** Domain shows a connection error or invalid certificate warning.
+
+    1. Confirm your DNS A record points to your machine's public IP. DNS propagation can take up to 48 hours.
+    2. Caddy provisions SSL automatically, but it needs port 80 and 443 open. Check your firewall or cloud security group.
+    3. View Caddy logs: `nixopus logs nixopus-caddy`
+    4. If using Cloudflare, set to "DNS only" (grey cloud) during initial setup.
+  </Accordion>
+</AccordionGroup>

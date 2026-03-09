@@ -1,0 +1,36 @@
+---
+title: "Charts"
+description: "Monitor system resources and running services."
+---
+
+Charts gives you a real-time view of your machine's health and resource usage.
+
+## Open Charts
+
+Click **Charts** in the sidebar. You'll see a customizable grid of widgets showing system metrics and deployment status.
+
+## Widgets
+
+The page includes several widgets that you can rearrange by dragging:
+
+| Widget | What it shows |
+| --- | --- |
+| **CPU** | Current CPU usage percentage and history |
+| **Memory** | RAM usage, available, and total |
+| **Load** | System load averages (1, 5, 15 min) |
+| **Disk** | Storage usage per mount |
+| **Network** | Inbound/outbound traffic |
+| **Containers** | All running containers across your machine |
+| **Deployments** | Recent deployment activity and status |
+
+Use the widget selector to choose which widgets are visible, and drag them to rearrange the layout.
+
+## Containers widget
+
+The containers widget on Charts shows **all** containers running on your machine — not just those created by Nixopus. This gives you full visibility into what's consuming resources.
+
+## Per-app monitoring
+
+For app-specific monitoring, open the app from **Apps** and switch to the **Monitoring** tab. This shows deployment health, health check results, and deployment history for that specific app.
+
+See [health checks](/guides/health-checks) for configuring uptime monitoring on individual apps.

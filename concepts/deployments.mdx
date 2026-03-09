@@ -1,0 +1,81 @@
+---
+title: "Deployments"
+description: "How Nixopus builds and deploys your apps."
+---
+
+Deployments are the core of Nixopus. You push code, Nixopus builds it, runs it, and makes it available.
+
+## Just want to deploy?
+
+If you don't want to think about Dockerfiles, Compose files, or build configuration — just use the agentic chat. Tell it to deploy your project, and it handles everything: analyzes your codebase, generates the right config, and ships it.
+
+- **From the dashboard** — use [AI Chat](/guides/ai-chat) to deploy with a conversation
+- **From your editor** — use the [editor extension](/extension/deploying) to deploy without leaving VS Code or Cursor
+
+The rest of this page covers how deployments work under the hood, for when you need full control.
+
+---
+
+## Apps
+
+An app in Nixopus represents a single deployable unit. It's tied to a GitHub repository and branch, has its own build configuration, environment variables, and domains.
+
+You manage apps from the **Apps** page in the sidebar. Each app has a detail page with tabs for monitoring, configuration, deployments, workflows, resources, and logs.
+
+## Build packs
+
+Nixopus supports two ways to build your app:
+
+<Tabs>
+  <Tab title="Dockerfile">
+    Provide a `Dockerfile` in your repo. Nixopus builds the image exactly as specified and runs it.
+
+    You can customize the Dockerfile path and base path if your Dockerfile isn't at the repo root.
+  </Tab>
+  <Tab title="Docker Compose">
+    Provide a `docker-compose.yml` for multi-service apps. Nixopus handles the entire stack — databases, caches, workers, and your app together.
+
+    <Tip>
+      Use Compose when your app needs sidecar services like Redis or PostgreSQL alongside it.
+    </Tip>
+  </Tab>
+</Tabs>
+
+## Deployment lifecycle
+
+<Steps>
+  <Step title="Push">
+    You push code to your connected GitHub repository (or trigger a manual deploy from the dashboard).
+  </Step>
+  <Step title="Webhook">
+    GitHub sends a webhook to Nixopus. The API validates it and queues a build.
+  </Step>
+  <Step title="Build">
+    Nixopus pulls your code, builds your container image using the configured build pack, and streams build logs to the **Deployments** tab in real time.
+  </Step>
+  <Step title="Deploy">
+    The new container starts. Caddy updates its routing configuration to point traffic to the new instance.
+  </Step>
+  <Step title="Health check">
+    Nixopus waits for the new container to become healthy. If the container fails to start or doesn't become ready within the timeout, the deployment is marked as failed.
+  </Step>
+</Steps>
+
+## Environment variables
+
+Environment variables come in two types:
+
+- **Build-time** — available during the build process (e.g., `NODE_ENV`, private npm tokens)
+- **Runtime** — injected when the container starts (e.g., database URLs, API secrets)
+
+<Warning>
+  Build-time variables are baked into the image. Do not use them for secrets that should not persist in the image layer.
+</Warning>
+
+## Rollbacks
+
+Every successful deployment is retained. Roll back to any previous deployment from the **Deployments** tab. Rollbacks reuse the original container image, so they complete in seconds.
+
+## Deploy logs
+
+Build and runtime logs are available in real time from the **Deployments** tab. Click on any deployment to see its full log output. For ongoing container logs, use the **Logs** tab on the app detail page.

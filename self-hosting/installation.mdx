@@ -1,0 +1,104 @@
+---
+title: "Installation"
+description: "Install Nixopus on your own machine with a single command."
+---
+
+Run the full Nixopus stack on a machine you control.
+
+```bash
+curl -fsSL install.nixopus.com | sudo bash
+```
+
+<Warning>
+  Nixopus is in active development. Self-hosted images are pulled as `latest` and are not pinned to a specific version. Use in production workloads at your own risk.
+</Warning>
+
+## When to self-host
+
+**Self-host** when you need full control over your data, have specific compliance requirements, or want to run on your own infrastructure.
+
+**Use Nixopus Cloud** for production workloads. Nixopus Cloud includes security patches, pinned and tested image versions, automatic backups, and priority support. Sign up at [dashboard.nixopus.com](https://dashboard.nixopus.com) — you get free allocated machine resources on signup to explore the platform.
+
+## Requirements
+
+Nixopus manages Docker, binds ports 80/443, and SSH-es into the host. **Use a fresh, dedicated VPS** — not a machine already running other production services. Shared machines will have port conflicts, permission issues, and risk interfering with existing workloads.
+
+| Requirement | Minimum |
+| --- | --- |
+| Machine | Fresh VPS from any cloud provider (Hetzner, DigitalOcean, AWS, etc.) |
+| Architecture | x86_64 (amd64) or aarch64 (arm64) |
+| RAM | 1 GB minimum (2 GB+ recommended) |
+| Disk | 2 GB free minimum |
+| Access | Root (the installer must run as root) |
+| Docker | Installed automatically if not present (Docker Engine + Compose V2) |
+
+### Tested distributions
+
+Tested in CI on every release:
+
+| Distribution | Version |
+| --- | --- |
+| Ubuntu | 22.04, 24.04 |
+| Debian | 12 |
+| Rocky Linux | 9 |
+| Alpine | 3.20 |
+
+### Should also work
+
+The installer has support paths for these but they are not tested in CI:
+
+| Distribution | Notes |
+| --- | --- |
+| Alma Linux | Uses the same install path as Rocky |
+| CentOS / RHEL | Uses the same install path as Rocky |
+| Fedora | Uses `dnf`, same as Rocky/Alma |
+
+Other Linux distributions may work if Docker and Compose V2 are already installed. The installer requires `/etc/os-release` to be present.
+
+## Install
+
+<Steps>
+  <Step title="Point DNS (optional)">
+    If you want automatic HTTPS, create a DNS A record pointing your domain to the machine's public IP **before** running the installer.
+
+    Skip this step to run in IP mode over plain HTTP.
+  </Step>
+  <Step title="Run the installer">
+    ```bash
+    curl -fsSL install.nixopus.com | sudo bash
+    ```
+
+    Or with configuration:
+
+    ```bash
+    DOMAIN=panel.example.com ADMIN_EMAIL=admin@example.com curl -fsSL install.nixopus.com | sudo bash
+    ```
+
+    The installer will ask for confirmation in interactive mode before proceeding. See [Configuration](/self-hosting/configuration) for all available options.
+  </Step>
+  <Step title="Access the dashboard">
+    Once services are healthy, open your browser and navigate to:
+
+    - **With domain:** `https://your-domain.com`
+    - **Without domain:** `http://your-machine-ip`
+
+    Sign in with your admin email. If you haven't configured an email provider, the OTP code is logged to Docker console output — check with `nixopus logs nixopus-auth`.
+  </Step>
+</Steps>
+
+## What the installer modifies
+
+Everything the installer touches outside of `$NIXOPUS_HOME` (`/opt/nixopus` by default):
+
+| Change | Path | Notes |
+| --- | --- | --- |
+| Installs prereqs if missing | System packages | `curl`, `openssl`, `openssh-client` via apt/dnf/apk |
+| Installs Docker if missing | System packages | Docker Engine + Compose V2, enabled on boot |
+| Management CLI | `/usr/local/bin/nixopus` | Overwritten on each install |
+| SSH public key | `~/.ssh/authorized_keys` | Appended once (skips if already present). Required for deployments via SSH. |
+
+Everything else (config, compose files, SSH keys, Caddyfile) is contained in `$NIXOPUS_HOME`.
+
+<Note>
+  The first user to sign up becomes the admin. After that, registration is closed — you invite users manually.
+</Note>

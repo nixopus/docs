@@ -1,0 +1,32 @@
+---
+title: "Chat interface"
+description: "Talk to the deploy agent."
+---
+
+The Nixopus sidebar gives you a chat interface to the AI deploy agent. You type in natural language — the agent handles the rest.
+
+## Open the chat
+
+Click the Nixopus icon in the sidebar or run **Nixopus: Open Chat** from the command palette.
+
+## What the agent can do
+
+- **Analyze your codebase** — Detects your framework, services, and dependencies.
+- **Generate configurations** — Creates Dockerfiles, docker-compose files, and deployment configs tailored to your project.
+- **Deploy your app** — Creates a project on Nixopus and deploys it end-to-end.
+- **Diagnose issues** — Reads logs, identifies errors, and suggests fixes for failed deployments.
+
+## Tool approval
+
+The agent uses tools (file generation, API calls, deployment actions) to complete tasks. You control how it asks for permission.
+
+| Mode | Behavior |
+| --- | --- |
+| **Ask** | The agent asks for approval before executing each tool. You review and confirm. |
+| **Auto** | The agent executes tools automatically without prompting. Faster, but less control. |
+
+Set this in your extension settings under `nixopus.toolApproval`. Default is `ask`.
+
+<Tip>
+  Start with `ask` mode to see exactly what the agent does. Switch to `auto` once you're comfortable with the flow.
+</Tip>

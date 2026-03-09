@@ -1,0 +1,44 @@
+---
+title: "AI chat"
+description: "Deploy, configure, and troubleshoot with the Nixopus AI agent."
+---
+
+Nixopus includes a built-in AI agent you can chat with directly from the dashboard. It can deploy apps, manage infrastructure, and diagnose issues — all through conversation.
+
+## Open AI chat
+
+Click **Chats** in the sidebar to open the AI chat interface.
+
+## What it can do
+
+### Deploy and manage apps
+
+- **Deploy from a repo** — select a repository, the agent analyzes your codebase and deploys it
+- **Generate Dockerfiles and Compose files** — the agent writes build configuration based on your project structure
+- **Configure environment variables** — ask it to set up env vars for your app
+- **Add and configure domains** — assign custom domains and set up routing
+- **Redeploy and rollback** — trigger redeployments or roll back to a previous version
+
+### Monitor and troubleshoot
+
+- **Read deployment and container logs** — the agent can inspect logs to find issues
+- **Diagnose failed deployments** — describe the problem, the agent investigates and suggests fixes
+- **Check container status** — ask about running containers, health, and resource usage
+
+### Context-aware
+
+The chat understands your current context. You can tag specific resources using the `@` mention to give the agent focus:
+
+- **@App** — reference a specific application
+- **@Container** — reference a running container
+- **@Domain** — reference a domain
+
+This lets you ask questions like "why is @my-app failing?" or "show me the logs for @my-api-container" without navigating away.
+
+<Tip>
+  You can also use the [editor extension](/extension/deploying) to access the same agent from VS Code or Cursor — deploy, troubleshoot, and manage your apps without leaving your editor.
+</Tip>
+
+<Note>
+  AI chat uses credits on Nixopus Cloud. See [credits](/cloud/credits) for usage details.
+</Note>

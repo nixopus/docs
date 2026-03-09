@@ -1,0 +1,46 @@
+---
+title: "Deploy your first app"
+description: "Go from repo to live in a few clicks."
+---
+
+<Steps>
+  <Step title="Connect GitHub" href="/guides/github-integration">
+    When you first open **Apps**, Nixopus walks you through setting up the GitHub App. This creates a GitHub App on your account and installs it on the repositories you choose. See the [GitHub integration guide](/guides/github-integration) for details.
+  </Step>
+  <Step title="Pick a repo">
+    Click **Create** from the apps list. You'll see your connected repositories — search or sort to find the one you want, then select it.
+  </Step>
+  <Step title="Deploy via chat">
+    Selecting a repo takes you to the [AI Chat](/guides/ai-chat) with a pre-filled prompt. Hit **Enter** and Nixopus analyzes your codebase, generates the right build configuration, and deploys your app automatically.
+  </Step>
+  <Step title="Verify">
+    Once the deploy finishes, click the live URL to confirm your app is running. Every deployment gets HTTPS automatically.
+  </Step>
+</Steps>
+
+<Tip>
+  You can also deploy from VS Code or Cursor using the [editor extension](/extension/deploying) — just open the chat and say "deploy this project."
+</Tip>
+
+<Note>
+  **Self-hosted users** who need full control over build configuration can use the deploy form instead. This lets you manually set the build pack, Dockerfile path, environment variables, domains, and pre/post run commands.
+</Note>
+
+## App detail tabs
+
+After deploying, your app's detail page has these tabs:
+
+| Tab | What's there |
+| --- | --- |
+| **Monitoring** | Deployment overview, health check status, deployment health chart |
+| **Configuration** | Build settings, domains, environment variables |
+| **Deployments** | Deploy history, logs for each deployment |
+| **Workflows** | AI-powered deployment workflows |
+| **Resources** | Running containers, images, start/stop/restart |
+| **Logs** | Real-time container logs |
+
+## Next steps
+
+- [Set environment variables](/guides/environment-variables) for your app.
+- [Enable auto-deploy](/guides/github-integration) on every push.
+- [Configure health checks](/guides/health-checks) to monitor uptime.

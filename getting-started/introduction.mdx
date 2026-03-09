@@ -1,0 +1,35 @@
+---
+title: "Introduction"
+description: "How Nixopus works and what you can do with it."
+---
+
+## How it works
+
+1. **Connect your repo** — [link your GitHub account](/guides/github-integration) and select a repository.
+2. **Tell the agent to deploy** — from the [dashboard](/guides/ai-chat) or your [editor](/extension/deploying), the agent analyzes your codebase, generates the right config, and deploys.
+3. **Go live** — your app gets a URL with HTTPS. Automatic SSL, routing, and domain management.
+4. **Agent keeps watching** *(in development)* — if something fails, the agent reads the logs, creates a PR with a fix, and redeploys.
+
+## Key features
+
+- **AI-powered deployment** — the agent generates configs, deploys, and fixes failures
+- **Everything through chat** — deploy, add domains, check logs, roll back — one interface
+- **Open source & self-hostable** — run on your own machine or use [Nixopus Cloud](https://dashboard.nixopus.com)
+- **Editor extension** — deploy from [VS Code or Cursor](/extension/overview) without opening a browser
+- **Multi-machine orchestration** — connect multiple machines and manage them from one place
+- **Full machine access** — [terminal](/guides/terminal) and [containers](/guides/containers) in the dashboard
+- **Auto HTTPS** — every deployment gets SSL via Caddy
+- **Custom domains** — [point your domain](/concepts/domains), Nixopus does the rest
+- **Instant rollbacks** — roll back to any previous deployment
+- **Framework agnostic** — anything that runs in a container
+
+## Get started
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="bolt" href="/getting-started/quickstart">
+    Deploy your first app on Nixopus Cloud.
+  </Card>
+  <Card title="Self-hosting" icon="server" href="/self-hosting/installation">
+    Run Nixopus on your own infrastructure.
+  </Card>
+</CardGroup>

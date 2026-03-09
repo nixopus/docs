@@ -1,0 +1,29 @@
+---
+title: "Authentication"
+description: "How users and services authenticate with Nixopus."
+---
+
+Every request to the Nixopus API is authenticated — there are no anonymous endpoints.
+
+## Auth methods
+
+| Method | Description |
+| --- | --- |
+| **Email OTP** | Sign in with a 6-digit code sent to your email. Best for quick, passwordless access. |
+| **Email & password** | Standard email and password authentication. Only available for self-hosted users. |
+| **Passkeys** | WebAuthn-based passkeys using device biometrics or a hardware security key. Most secure option. |
+| **API keys** | Programmatic access for scripts, CI/CD, AI agents, and integrations like OpenClaw. Prefixed with `nxp_`, rate limited to 1000 requests/hour, scoped to your organization. |
+| **Device authorization** | Used by the VS Code or Cursor extension. You approve a login request in your browser — no need to paste tokens manually. |
+
+```bash
+curl -H "Authorization: Bearer nxp_your_key_here" \
+  https://api.nixopus.com/api/v1/deploy/applications
+```
+
+## Sessions
+
+Sessions expire after 7 days of inactivity. Active sessions are automatically extended, so you stay logged in as long as you keep using Nixopus.
+
+<Warning>
+  API keys do not follow session expiry rules. They remain valid until you revoke them.
+</Warning>
