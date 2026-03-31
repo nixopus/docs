@@ -3,6 +3,8 @@ title: "Installation"
 description: "Install Nixopus on your own machine with a single command."
 ---
 
+import { InstallCommandBuilder } from "/snippets/install-command-builder.jsx";
+
 Run the full Nixopus stack on a machine you control.
 
 ```bash
@@ -63,18 +65,12 @@ Other Linux distributions may work if Docker and Compose V2 are already installe
 
     Skip this step to run in IP mode over plain HTTP.
   </Step>
-  <Step title="Run the installer">
-    ```bash
-    curl -fsSL install.nixopus.com | sudo bash
-    ```
+  <Step title="Build your install command">
+    Configure your installation using the builder below. Select your options and the command updates in real time — then copy and run it on your server.
 
-    Or with configuration:
+    <InstallCommandBuilder />
 
-    ```bash
-    DOMAIN=panel.example.com ADMIN_EMAIL=admin@example.com curl -fsSL install.nixopus.com | sudo bash
-    ```
-
-    The installer will ask for confirmation in interactive mode before proceeding. See [Configuration](/self-hosting/configuration) for all available options.
+    See [Configuration](/self-hosting/configuration) for detailed documentation on every option.
   </Step>
   <Step title="Access the dashboard">
     Once services are healthy, open your browser and navigate to:
