@@ -10,8 +10,8 @@ export const InstallCommandBuilder = () => {
   const [databaseUrl, setDatabaseUrl] = useState("");
   const [externalRedis, setExternalRedis] = useState(false);
   const [redisUrl, setRedisUrl] = useState("");
-  const [llmProvider, setLlmProvider] = useState("ollama");
-  const [openrouterKey, setOpenrouterKey] = useState("");
+  const [llmProvider, setLlmProvider] = useState("openrouter");
+  const [llmApiKey, setLlmApiKey] = useState("");
   const [telemetry, setTelemetry] = useState(true);
   const [installDir, setInstallDir] = useState("");
   const [logLevel, setLogLevel] = useState("debug");
@@ -55,14 +55,14 @@ export const InstallCommandBuilder = () => {
     if (externalRedis && !redisUrl) {
       e.redisUrl = "Redis URL is required when using external Redis";
     }
-    if (llmProvider === "openrouter" && !openrouterKey) {
-      e.openrouterKey = "API key is required for OpenRouter";
+    if (!llmApiKey) {
+      e.llmApiKey = "API key is required";
     }
     if (installDir && !/^\/[a-zA-Z0-9/_-]+$/.test(installDir)) {
       e.installDir = "Must be an absolute path (e.g. /opt/nixopus)";
     }
     return e;
-  }, [mode, domain, email, customPorts, httpPort, httpsPort, sshPort, externalDb, databaseUrl, externalRedis, redisUrl, llmProvider, openrouterKey, installDir]);
+  }, [mode, domain, email, customPorts, httpPort, httpsPort, sshPort, externalDb, databaseUrl, externalRedis, redisUrl, llmProvider, llmApiKey, installDir]);
 
   const command = useMemo(() => {
     const vars = [];
@@ -75,14 +75,18 @@ export const InstallCommandBuilder = () => {
     }
     if (externalDb && databaseUrl && !errors.databaseUrl) vars.push(`DATABASE_URL="${databaseUrl}"`);
     if (externalRedis && redisUrl && !errors.redisUrl) vars.push(`REDIS_URL="${redisUrl}"`);
-    if (llmProvider === "openrouter" && openrouterKey && !errors.openrouterKey) vars.push(`OPENROUTER_API_KEY=${openrouterKey}`);
+    if (llmApiKey && !errors.llmApiKey) {
+      vars.push(`LLM_PROVIDER=${llmProvider}`);
+      const keyVarMap = { openrouter: "OPENROUTER_API_KEY", openai: "OPENAI_API_KEY", anthropic: "ANTHROPIC_API_KEY", google: "GOOGLE_GENERATIVE_AI_API_KEY", deepseek: "DEEPSEEK_API_KEY", groq: "GROQ_API_KEY" };
+      vars.push(`${keyVarMap[llmProvider]}=${llmApiKey}`);
+    }
     if (!telemetry) vars.push("NIXOPUS_TELEMETRY=off");
     if (installDir && !errors.installDir) vars.push(`NIXOPUS_HOME=${installDir}`);
     if (logLevel !== "debug") vars.push(`LOG_LEVEL=${logLevel}`);
 
     const prefix = vars.length > 0 ? vars.join(" \\\n  ") + " \\\n  " : "";
     return `${prefix}curl -fsSL install.nixopus.com | sudo bash`;
-  }, [mode, domain, email, customPorts, httpPort, httpsPort, sshPort, externalDb, databaseUrl, externalRedis, redisUrl, llmProvider, openrouterKey, telemetry, installDir, logLevel, errors]);
+  }, [mode, domain, email, customPorts, httpPort, httpsPort, sshPort, externalDb, databaseUrl, externalRedis, redisUrl, llmProvider, llmApiKey, telemetry, installDir, logLevel, errors]);
 
   const hasErrors = Object.keys(errors).length > 0;
 
@@ -249,41 +253,41 @@ export const InstallCommandBuilder = () => {
 
       {/* AI Agent */}
       <div className={cardStyle}>
-        <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-3">AI Agent</div>
-        <div className="flex gap-2 mb-2">
-          <button
-            onClick={() => setLlmProvider("ollama")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${llmProvider === "ollama" ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900" : "bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-600"}`}
+        <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-3">AI Agent — LLM Provider</div>
+        <div>
+          <label className={labelStyle}>Provider</label>
+          <select
+            value={llmProvider}
+            onChange={(e) => { setLlmProvider(e.target.value); setLlmApiKey(""); }}
+            className={inputBase}
           >
-            Ollama (local)
-          </button>
-          <button
-            onClick={() => setLlmProvider("openrouter")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${llmProvider === "openrouter" ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900" : "bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-600"}`}
-          >
-            OpenRouter (cloud)
-          </button>
+            <option value="openrouter">OpenRouter — Claude, GPT-4, Gemini & more</option>
+            <option value="openai">OpenAI — GPT-4o</option>
+            <option value="anthropic">Anthropic — Claude Sonnet</option>
+            <option value="google">Google — Gemini 2.5 Flash</option>
+            <option value="deepseek">DeepSeek — DeepSeek Chat</option>
+            <option value="groq">Groq — Llama 3.3 70B</option>
+          </select>
         </div>
-        {llmProvider === "ollama" && (
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">Runs locally — no API key needed. Requires 4 GB+ RAM and 5 GB+ disk for model weights.</p>
-        )}
-        {llmProvider === "openrouter" && (
-          <div className="mt-2">
-            <label className={labelStyle}>OpenRouter API key</label>
-            <input
-              type="text"
-              placeholder="sk-or-v1-..."
-              value={openrouterKey}
-              onChange={(e) => setOpenrouterKey(e.target.value)}
-              className={`${inputBase} ${errors.openrouterKey ? inputError : ""}`}
-            />
-            {errors.openrouterKey && <p className={errorStyle}>{errors.openrouterKey}</p>}
+        <div className="mt-3">
+          <label className={labelStyle}>
+            {({ openrouter: "OpenRouter", openai: "OpenAI", anthropic: "Anthropic", google: "Google AI", deepseek: "DeepSeek", groq: "Groq" })[llmProvider]} API key
+          </label>
+          <input
+            type="text"
+            placeholder={({ openrouter: "sk-or-v1-...", openai: "sk-...", anthropic: "sk-ant-...", google: "AI...", deepseek: "sk-...", groq: "gsk_..." })[llmProvider]}
+            value={llmApiKey}
+            onChange={(e) => setLlmApiKey(e.target.value)}
+            className={`${inputBase} ${errors.llmApiKey ? inputError : ""}`}
+          />
+          {errors.llmApiKey && <p className={errorStyle}>{errors.llmApiKey}</p>}
+          {llmProvider === "openrouter" && (
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
               Get a key at{" "}
               <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-900 dark:hover:text-zinc-100">openrouter.ai/keys</a>
             </p>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Advanced */}
