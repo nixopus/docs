@@ -84,8 +84,8 @@ export const InstallCommandBuilder = () => {
     if (installDir && !errors.installDir) vars.push(`NIXOPUS_HOME=${installDir}`);
     if (logLevel !== "debug") vars.push(`LOG_LEVEL=${logLevel}`);
 
-    const prefix = vars.length > 0 ? vars.join(" \\\n  ") + " \\\n  " : "";
-    return `${prefix}curl -fsSL install.nixopus.com | sudo bash`;
+    const prefix = vars.length > 0 ? "sudo " + vars.join(" \\\n  ") + " \\\n  " : "sudo ";
+    return `curl -fsSL install.nixopus.com | ${prefix}bash`;
   }, [mode, domain, email, customPorts, httpPort, httpsPort, sshPort, externalDb, databaseUrl, externalRedis, redisUrl, llmProvider, llmApiKey, telemetry, installDir, logLevel, errors]);
 
   const hasErrors = Object.keys(errors).length > 0;
