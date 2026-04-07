@@ -14,7 +14,7 @@ description: "Common issues and fixes for self-hosted Nixopus."
     ```bash
     # Option 1: Use the original password from the backup
     cat /opt/nixopus/.env.bak | grep DB_PASSWORD
-    DB_PASSWORD=<original_password> curl -fsSL install.nixopus.com | sudo bash
+    curl -fsSL install.nixopus.com | sudo DB_PASSWORD=<original_password> bash
 
     # Option 2: Start fresh (destroys all data)
     docker volume rm $(docker volume ls -q --filter name=nixopus)

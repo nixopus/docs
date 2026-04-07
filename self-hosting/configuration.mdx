@@ -6,7 +6,7 @@ description: "Environment variables, ports, firewall, and HTTPS for self-hosted 
 All parameters are optional. Pass them as environment variables before the install command.
 
 ```bash
-DOMAIN=panel.example.com ADMIN_EMAIL=admin@example.com curl -fsSL install.nixopus.com | sudo bash
+curl -fsSL install.nixopus.com | sudo DOMAIN=panel.example.com ADMIN_EMAIL=admin@example.com bash
 ```
 
 ## Environment variables
@@ -65,7 +65,7 @@ The SSH port on your host (default `22`) must also be accessible from the Docker
 If ports 80/443 are already in use, either stop the conflicting service or install with custom ports:
 
 ```bash
-CADDY_HTTP_PORT=8080 CADDY_HTTPS_PORT=8443 curl -fsSL install.nixopus.com | sudo bash
+curl -fsSL install.nixopus.com | sudo CADDY_HTTP_PORT=8080 CADDY_HTTPS_PORT=8443 bash
 ```
 
 Use `docker ps --format '{{.Ports}} {{.Names}}'` to find what's using a port.
@@ -118,7 +118,7 @@ During installation, you'll be prompted to choose an LLM provider:
 You can set the provider non-interactively:
 
 ```bash
-LLM_PROVIDER=anthropic ANTHROPIC_API_KEY=sk-ant-xxxxx curl -fsSL install.nixopus.com | sudo bash
+curl -fsSL install.nixopus.com | sudo LLM_PROVIDER=anthropic ANTHROPIC_API_KEY=sk-ant-xxxxx bash
 ```
 
 Or change the provider after installation:
