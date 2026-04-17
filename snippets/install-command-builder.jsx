@@ -2,6 +2,8 @@ export const InstallCommandBuilder = () => {
   const [mode, setMode] = useState("ip");
   const [domain, setDomain] = useState("");
   const [email, setEmail] = useState("");
+  const [autoPassword, setAutoPassword] = useState(true);
+  const [adminPassword, setAdminPassword] = useState("");
   const [customPorts, setCustomPorts] = useState(false);
   const [httpPort, setHttpPort] = useState("80");
   const [httpsPort, setHttpsPort] = useState("443");
@@ -29,6 +31,21 @@ export const InstallCommandBuilder = () => {
     }
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       e.email = "Enter a valid email address";
+    }
+    if (email && !autoPassword) {
+      if (!adminPassword) {
+        e.adminPassword = "Password is required when auto-generate is off";
+      } else {
+        const checks = [
+          { ok: adminPassword.length >= 8, msg: "at least 8 characters" },
+          { ok: /[A-Z]/.test(adminPassword), msg: "an uppercase letter" },
+          { ok: /[a-z]/.test(adminPassword), msg: "a lowercase letter" },
+          { ok: /[0-9]/.test(adminPassword), msg: "a digit" },
+          { ok: /[!@#$%^&*(),.?":{}|<>]/.test(adminPassword), msg: "a special character" },
+        ];
+        const missing = checks.filter((c) => !c.ok).map((c) => c.msg);
+        if (missing.length) e.adminPassword = `Must contain ${missing.join(", ")}`;
+      }
     }
     if (customPorts) {
       const hp = parseInt(httpPort, 10);
@@ -62,12 +79,15 @@ export const InstallCommandBuilder = () => {
       e.installDir = "Must be an absolute path (e.g. /opt/nixopus)";
     }
     return e;
-  }, [mode, domain, email, customPorts, httpPort, httpsPort, sshPort, externalDb, databaseUrl, externalRedis, redisUrl, llmProvider, llmApiKey, installDir]);
+  }, [mode, domain, email, autoPassword, adminPassword, customPorts, httpPort, httpsPort, sshPort, externalDb, databaseUrl, externalRedis, redisUrl, llmProvider, llmApiKey, installDir]);
 
   const command = useMemo(() => {
     const vars = [];
     if (mode === "domain" && domain && !errors.domain) vars.push(`DOMAIN=${domain}`);
     if (email && !errors.email) vars.push(`ADMIN_EMAIL=${email}`);
+    if (email && !autoPassword && adminPassword && !errors.adminPassword) {
+      vars.push(`ADMIN_PASSWORD='${adminPassword.replace(/'/g, "'\\''")}'`);
+    }
     if (customPorts) {
       if (httpPort !== "80" && !errors.httpPort) vars.push(`CADDY_HTTP_PORT=${httpPort}`);
       if (httpsPort !== "443" && !errors.httpsPort) vars.push(`CADDY_HTTPS_PORT=${httpsPort}`);
@@ -86,7 +106,7 @@ export const InstallCommandBuilder = () => {
 
     const prefix = vars.length > 0 ? "sudo " + vars.join(" \\\n  ") + " \\\n  " : "sudo ";
     return `curl -fsSL install.nixopus.com | ${prefix}bash`;
-  }, [mode, domain, email, customPorts, httpPort, httpsPort, sshPort, externalDb, databaseUrl, externalRedis, redisUrl, llmProvider, llmApiKey, telemetry, installDir, logLevel, errors]);
+  }, [mode, domain, email, autoPassword, adminPassword, customPorts, httpPort, httpsPort, sshPort, externalDb, databaseUrl, externalRedis, redisUrl, llmProvider, llmApiKey, telemetry, installDir, logLevel, errors]);
 
   const hasErrors = Object.keys(errors).length > 0;
 
@@ -170,8 +190,32 @@ export const InstallCommandBuilder = () => {
               className={`${inputBase} ${errors.email ? inputError : ""}`}
             />
             {errors.email && <p className={errorStyle}>{errors.email}</p>}
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">First user to sign up becomes admin. OTP is logged if no email provider is configured.</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">When set, the installer pre-creates the admin account after services start. Skip to register the first user via the dashboard instead.</p>
           </div>
+          {email && (
+            <div className="pt-1">
+              <Toggle
+                checked={autoPassword}
+                onChange={setAutoPassword}
+                label="Auto-generate admin password"
+                description="Recommended. Printed in the install summary and saved to /opt/nixopus/.env."
+              />
+              {!autoPassword && (
+                <div className="mt-3 ml-12">
+                  <label className={labelStyle}>Admin password</label>
+                  <input
+                    type="text"
+                    placeholder="ChangeMe!23"
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                    className={`${inputBase} ${errors.adminPassword ? inputError : ""}`}
+                  />
+                  {errors.adminPassword && <p className={errorStyle}>{errors.adminPassword}</p>}
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Min 8 chars, with uppercase, lowercase, digit, and special (<code>!@#$%^&amp;*(),.?":{`{}`}|&lt;&gt;</code>).</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

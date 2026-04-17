@@ -132,6 +132,56 @@ description: "Common issues and fixes for self-hosted Nixopus."
     3. If the issue persists, your workload may need more resources. Consider upgrading your machine — see [machine resources](/cloud/machines#machine-resources) for Nixopus Cloud, or add more RAM to your VPS for self-hosted.
   </Accordion>
 
+  <Accordion title="Admin bootstrap failed during install">
+    **Symptom:** Install summary shows `Could not auto-create admin (HTTP …)` or `Auth service rejected request: …`.
+
+    The installer creates the admin via the auth service after the stack starts. If the auth service is slow, the origin is misconfigured, or the credentials don't pass validation, the bootstrap is skipped — but the install itself succeeds.
+
+    **Fix:** Retry without reinstalling.
+
+    ```bash
+    sudo nixopus admin-bootstrap
+    ```
+
+    Common error codes printed by the auth service:
+
+    | Code | Meaning | Fix |
+    | --- | --- | --- |
+    | `USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL` | Admin already exists | Nothing — log in with the existing credentials |
+    | `EMAIL_PASSWORD_SIGN_UP_DISABLED` | Email/password sign-up turned off in the auth service | Enable it in the auth service config or seed via DB |
+    | `INVALID_ORIGIN` / `MISSING_OR_NULL_ORIGIN` | Origin header rejected | Check `ALLOWED_ORIGIN` matches your `BASE_URL` in `/opt/nixopus/.env` |
+    | `PASSWORD_TOO_SHORT` / `PASSWORD_TOO_LONG` / `INVALID_PASSWORD` | Password rules failed | Pick a password matching the [rules](/self-hosting/configuration#password-rules) and re-run with `nixopus admin-bootstrap <email> <password>` |
+    | `INVALID_EMAIL` | Email malformed | Re-run with a valid email |
+
+    If the auth service is just slow to come up, increase the timeout:
+
+    ```bash
+    sudo ADMIN_BOOTSTRAP_TIMEOUT=120 nixopus admin-bootstrap
+    ```
+  </Accordion>
+
+  <Accordion title="Lost the admin password">
+    The auto-generated admin password is stored in `/opt/nixopus/.env` as `ADMIN_PASSWORD`. If the file still has it:
+
+    ```bash
+    sudo grep '^ADMIN_PASSWORD=' /opt/nixopus/.env
+    ```
+
+    If that's missing or the account is locked out, recreate the admin by deleting the existing credential row and re-running the bootstrap with a fresh password:
+
+    ```bash
+    docker exec -it nixopus-db psql -U nixopus -d nixopus -c \
+      "DELETE FROM account WHERE user_id = (SELECT id FROM \"user\" WHERE email='admin@example.com');
+       DELETE FROM \"user\" WHERE email='admin@example.com';"
+
+    sudo nixopus admin-bootstrap admin@example.com 'NewPass!23'
+    ```
+
+    <Warning>
+      Deleting the user row drops anything tied to that user (org memberships, API keys, audit ownership). Only do this if you understand the impact.
+    </Warning>
+  </Accordion>
+
   <Accordion title="Domain or SSL issues">
     **Symptom:** Domain shows a connection error or invalid certificate warning.
 

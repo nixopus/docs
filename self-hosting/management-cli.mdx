@@ -25,6 +25,7 @@ sudo nixopus status
 | `nixopus ip set <ip>` | Change host IP |
 | `nixopus port set <http\|https\|ssh> <port>` | Change a port |
 | `nixopus backup` | Backup database and config |
+| `nixopus admin-bootstrap [email] [password]` | Create the initial admin via the auth API |
 | `nixopus uninstall` | Remove containers (keeps data) |
 | `nixopus uninstall --purge` | Remove everything including data |
 
@@ -76,3 +77,25 @@ nixopus restart
 nixopus config set LOG_LEVEL=info
 nixopus restart
 ```
+
+### Admin bootstrap
+
+`nixopus admin-bootstrap` creates the first admin account by calling Better Auth's `POST /api/auth/sign-up/email` through Caddy. Use it when the install-time bootstrap was skipped (no `ADMIN_EMAIL` set), failed (auth service slow to start, origin mismatch), or when you want to recreate the admin from the values stored in `.env`.
+
+```bash
+sudo nixopus admin-bootstrap
+```
+
+By default it uses `ADMIN_EMAIL` and `ADMIN_PASSWORD` from `/opt/nixopus/.env`. You can override one or both inline:
+
+```bash
+sudo nixopus admin-bootstrap admin@example.com 'NewPass!23'
+```
+
+Behavior:
+
+- Returns immediately with a success message if the admin already exists (`USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL` from the auth service).
+- Prints the auth service's `code` field on validation failures (`PASSWORD_TOO_SHORT`, `INVALID_ORIGIN`, `EMAIL_PASSWORD_SIGN_UP_DISABLED`, etc.).
+- Polls for up to `ADMIN_BOOTSTRAP_TIMEOUT` seconds (default `30` for the CLI, `60` during install) so the auth service has time to come up.
+
+The password must satisfy the [auth service rules](/self-hosting/configuration#password-rules).

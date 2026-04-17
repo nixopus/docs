@@ -78,7 +78,9 @@ Other Linux distributions may work if Docker and Compose V2 are already installe
     - **With domain:** `https://your-domain.com`
     - **Without domain:** `http://your-machine-ip`
 
-    Sign in with your admin email. If you haven't configured an email provider, the OTP code is logged to Docker console output — check with `nixopus logs nixopus-auth`.
+    If you provided `ADMIN_EMAIL`, the installer creates the admin account for you and prints the credentials in the install summary. If you also provided `ADMIN_PASSWORD`, that's used; otherwise a strong password is auto-generated and printed once. The same values are stored in `/opt/nixopus/.env` (mode `600`).
+
+    If you skipped `ADMIN_EMAIL`, the dashboard sends you to `/register` on first visit — the first user to sign up becomes the admin.
   </Step>
 </Steps>
 
@@ -96,5 +98,9 @@ Everything the installer touches outside of `$NIXOPUS_HOME` (`/opt/nixopus` by d
 Everything else (config, compose files, SSH keys, Caddyfile) is contained in `$NIXOPUS_HOME`.
 
 <Note>
-  The first user to sign up becomes the admin. After that, registration is closed — you invite users manually.
+  Whoever owns the first credential account becomes the admin — either the user the installer pre-creates from `ADMIN_EMAIL`/`ADMIN_PASSWORD`, or the first person to register through the dashboard if you skipped those. After that, registration is closed — you invite users manually.
 </Note>
+
+<Tip>
+  If the auto-bootstrap fails (services slow to start, origin mismatch, etc.) you can retry without reinstalling: `sudo nixopus admin-bootstrap`. See [Management CLI](/self-hosting/management-cli#admin-bootstrap) and [Troubleshooting](/self-hosting/troubleshooting) for details.
+</Tip>
