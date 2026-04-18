@@ -58,6 +58,71 @@ Suspends the machine. Your apps stop serving traffic and no compute is consumed 
 
 Brings a paused machine back to the **Running** state. Your apps become accessible again within seconds.
 
+## Backups
+
+Nixopus can back up your machine's data to S3-compatible storage using [restic](https://restic.net). Backups capture the contents of key directories and store them as deduplicated, encrypted snapshots.
+
+### What gets backed up
+
+By default, the following directories are included in every backup:
+
+- `/home` — user home directories and app data
+- `/etc` — system configuration
+- `/var/lib/docker/volumes` — persistent Docker volume data
+
+You can override the default paths with your own list in **Organization Settings → Backups**.
+
+### Triggering a backup
+
+To start a backup immediately, go to your machine card and select **Back up now** from the actions menu. You can also trigger one via the API:
+
+```bash
+curl -X POST 'https://api.nixopus.com/api/v1/machines/backup?server_id=<server-id>' \
+  -H 'Authorization: Bearer <token>' \
+  -H 'X-Organization-Id: <org-id>'
+```
+
+A backup job is queued and runs asynchronously. The response includes a `request_id` you can use to correlate the job.
+
+### Viewing backup history
+
+Past backups are listed under **Machine → Backups** in the dashboard, or via the API:
+
+```bash
+curl 'https://api.nixopus.com/api/v1/machines/backups?server_id=<server-id>' \
+  -H 'Authorization: Bearer <token>' \
+  -H 'X-Organization-Id: <org-id>'
+```
+
+Each entry shows the status (`pending`, `in_progress`, `completed`, `failed`), snapshot path, S3 path, and size.
+
+### Scheduled backups
+
+Enable automatic backups on a schedule from **Organization Settings → Backups**:
+
+| Setting | Options | Default |
+|---------|---------|---------|
+| **Frequency** | `daily`, `weekly` | `daily` |
+| **Hour (UTC)** | 0–23 | `2` |
+| **Day of week** | 0 (Sun) – 6 (Sat) | `0` |
+| **Retention** | Number of snapshots to keep | `7` |
+
+The scheduler runs hourly and enqueues a backup for any org whose configured time matches the current UTC hour (and day, for weekly). A backup is skipped if one is already in progress or the last completed backup is too recent (within 20 hours for daily, 6 days for weekly).
+
+### Backup storage
+
+Backups are stored in your configured S3-compatible bucket under the path:
+
+```
+backups/<org-id>/<server-id>/snapshots/<snapshot-id>
+```
+
+The restic repository is encrypted. The encryption key is derived from your server ID and is never written to the remote machine.
+
+<Note>
+  Backup requires S3 storage to be configured. If S3 is not set up, triggering a backup returns an error. Contact support if you need help configuring storage.
+</Note>
+
 ## Machine resources
 
 Each machine comes with allocated resources based on your plan:
