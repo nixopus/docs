@@ -1,0 +1,103 @@
+---
+title: "Branch Preview"
+description: "Test pull requests and branches on a real VPS before merging."
+---
+
+Preview images are automatically built for every pull request to the main repo. This lets you install and test a PR on a real server before it's merged.
+
+## Testing a pull request
+
+When a PR is opened, CI builds Docker images tagged `pr-<number>` and posts install instructions as a comment on the PR. Use the one-liner from the comment, or run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nixopus/nixopus/<branch>/installer/get.sh | \
+  sudo bash -s -- --preview <pr-number>
+```
+
+The `--preview` flag tells the installer to pull `pr-<number>` tagged images for the API and View services. Auth and Agent images fall back to `:latest` since they live in separate repositories.
+
+<Info>
+  Preview images are amd64-only. ARM64 servers are not supported for preview testing.
+</Info>
+
+## Testing a specific branch
+
+Combine `--branch` with `--preview` to use installer files from a specific branch while pulling that PR's images:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nixopus/nixopus/<branch>/installer/get.sh | \
+  sudo bash -s -- --branch <branch-name> --preview <pr-number>
+```
+
+## Testing a fork
+
+For contributions from forks, use `--fork` to point the installer at the fork's repository:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/<owner>/<repo>/<branch>/installer/get.sh | \
+  sudo bash -s -- --fork <owner>/<repo> --branch <branch-name>
+```
+
+<Warning>
+  The preview CI workflow only runs on the main repo. For forks, you need to build and push images to your own container registry, then override individually:
+
+  ```bash
+  curl -fsSL install.nixopus.com | \
+    sudo NIXOPUS_API_IMAGE=ghcr.io/youruser/nixopus-api:my-branch \
+         NIXOPUS_VIEW_IMAGE=ghcr.io/youruser/nixopus-view:my-branch \
+         bash
+  ```
+</Warning>
+
+## Installer flags
+
+| Flag | Description |
+| --- | --- |
+| `--preview <pr>` | Use preview images built for a pull request |
+| `--branch <name>` | Fetch installer files from a specific branch |
+| `--fork <owner/repo>` | Fetch installer files and images from a fork |
+| `--help` | Show installer flags help |
+
+## Image override variables
+
+You can also override individual container images via environment variables, without using flags:
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `NIXOPUS_API_IMAGE` | `ghcr.io/nixopus/nixopus-api:latest` | API container image |
+| `NIXOPUS_VIEW_IMAGE` | `ghcr.io/nixopus/nixopus-view:latest` | View container image |
+| `NIXOPUS_AUTH_IMAGE` | `ghcr.io/nixopus/auth:latest` | Auth container image |
+| `NIXOPUS_AGENT_IMAGE` | `ghcr.io/nixopus/agent:latest` | Agent container image |
+
+## What gets built
+
+Only services with code in this repository get preview images:
+
+| Service | Preview image | Source |
+| --- | --- | --- |
+| API | `ghcr.io/nixopus/nixopus-api:pr-<number>` | `api/` directory |
+| View | `ghcr.io/nixopus/nixopus-view:pr-<number>` | `view/` directory |
+| Auth | Falls back to `:latest` | Separate repo ([nixopus/auth](https://github.com/nixopus/auth)) |
+| Agent | Falls back to `:latest` | Separate repo |
+
+CI detects which directories changed and only builds affected images. If a PR only touches `api/`, only the API image is built — the View image stays on `:latest`.
+
+## Cleanup
+
+Preview images are automatically cleaned up:
+
+- **On PR close** — images for that PR are deleted immediately, whether the PR was merged or closed without merging.
+- **Weekly sweep** — any orphaned `pr-*` tagged images older than 7 days are removed every Monday at 03:00 UTC.
+- **Manual** — you can trigger cleanup from the [Actions tab](https://github.com/nixopus/nixopus/actions/workflows/cleanup_preview.yml) with a dry-run option.
+
+## Reverting to stable
+
+Re-run the installer without `--preview` to go back to the latest stable images:
+
+```bash
+curl -fsSL install.nixopus.com | sudo bash
+```
+
+<Tip>
+  The preview image tags are persisted to `/opt/nixopus/.env`, so `nixopus update` will continue pulling the preview tags until you reinstall without `--preview`.
+</Tip>

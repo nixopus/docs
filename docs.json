@@ -117,6 +117,7 @@
               "self-hosting/configuration",
               "self-hosting/management-cli",
               "self-hosting/updating",
+              "self-hosting/branch-preview",
               "self-hosting/backup-and-restore",
               "self-hosting/troubleshooting"
             ]

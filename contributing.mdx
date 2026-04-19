@@ -216,6 +216,17 @@ chore(release): v0.1.0-alpha.164
   ```
 </Tip>
 
+### Testing your PR on a real server
+
+When you open a PR, CI automatically builds preview Docker images and comments install instructions on the PR. You can test your changes on a VPS before merging:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nixopus/nixopus/<your-branch>/installer/get.sh | \
+  sudo bash -s -- --preview <pr-number>
+```
+
+Preview images are cleaned up automatically when the PR closes. See [Branch Preview](/self-hosting/branch-preview) for details.
+
 ## Getting help
 
 - **Discord** — join the [Nixopus Discord](https://discord.gg/nixopus) to ask questions
