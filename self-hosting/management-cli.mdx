@@ -20,9 +20,9 @@ sudo nixopus status
 | `nixopus stop` | Stop all services |
 | `nixopus config` | Show current configuration |
 | `nixopus config set KEY=VALUE` | Update a config value (restart required) |
-| `nixopus domain add <domain>` | Switch to domain-based HTTPS |
+| `nixopus domain add <domain> [flags]` | Switch to domain-based HTTPS |
 | `nixopus domain remove` | Switch back to IP-based HTTP |
-| `nixopus ip set <ip>` | Change host IP |
+| `nixopus ip set [flags] <ip>` | Change host IP |
 | `nixopus port set <http\|https\|ssh> <port>` | Change a port |
 | `nixopus backup` | Backup database and config |
 | `nixopus admin-bootstrap [email] [password]` | Create the initial admin via the auth API |
@@ -61,15 +61,49 @@ Ensure DNS is configured before running this.
 
 ```bash
 nixopus domain add panel.example.com
-nixopus restart
+```
+
+#### Domain flags
+
+| Flag | Description |
+| --- | --- |
+| `--ipv4` | Use IPv4 (A record). This is the default. |
+| `--ipv6` | Use IPv6 (AAAA record). |
+| `--verify=auto\|strict\|off` | DNS verification mode (default `auto`). `auto` warns on mismatch but proceeds. `strict` aborts on mismatch. `off` skips verification entirely (use when behind Cloudflare or a proxy). |
+
+The `--ipv4`/`--ipv6` flag overrides the instance-level `IP_FAMILY` for this command only. When omitted, the configured `IP_FAMILY` is used.
+
+```bash
+# Add domain with IPv6
+nixopus domain add panel.example.com --ipv6
+
+# Add domain behind Cloudflare proxy (skip DNS check)
+nixopus domain add panel.example.com --verify=off
+
+# Strict verification — abort if DNS doesn't match
+nixopus domain add panel.example.com --verify=strict
 ```
 
 ### Switch back to IP mode
 
 ```bash
 nixopus domain remove
-nixopus restart
 ```
+
+### Change host IP
+
+```bash
+# Set IPv4 (default)
+nixopus ip set 93.184.216.34
+
+# Set IPv6 explicitly
+nixopus ip set --ipv6 2001:db8::1
+
+# Auto-detected: addresses containing ":" are treated as IPv6
+nixopus ip set 2001:db8::1
+```
+
+When setting an IPv6 address while `IP_FAMILY` is still `ipv4`, the CLI prints a hint to enable dual-stack with `nixopus config set IP_FAMILY=dual`.
 
 ### Update a config value
 
