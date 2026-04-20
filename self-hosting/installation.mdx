@@ -61,9 +61,13 @@ Other Linux distributions may work if Docker and Compose V2 are already installe
 
 <Steps>
   <Step title="Point DNS (optional)">
-    If you want automatic HTTPS, create a DNS A record pointing your domain to the machine's public IP **before** running the installer.
+    If you want automatic HTTPS, create a DNS record pointing your domain to the machine's public IP **before** running the installer:
 
-    Skip this step to run in IP mode over plain HTTP.
+    - **IPv4** (default): create an **A** record
+    - **IPv6**: create an **AAAA** record
+    - **Dual-stack**: create both **A** and **AAAA** records
+
+    Skip this step to run in IP mode over plain HTTP. See [IPv6 and dual-stack](/self-hosting/configuration#ipv6-and-dual-stack) for details.
   </Step>
   <Step title="Build your install command">
     Configure your installation using the builder below. Select your options and the command updates in real time — then copy and run it on your server.

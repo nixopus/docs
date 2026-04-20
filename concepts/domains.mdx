@@ -35,10 +35,20 @@ On Nixopus Cloud, every app gets a `*.nixopus.ai` subdomain by default. You can 
 
 ## Self-hosted domains
 
-For [self-hosted](/self-hosting/installation) installations, point your domain's DNS (A record) to your machine's IP address. Nixopus detects the domain and configures the reverse proxy automatically.
+For [self-hosted](/self-hosting/installation) installations, point your domain's DNS to your machine's IP address. Nixopus detects the domain and configures the reverse proxy automatically.
+
+The record type depends on your [IP family configuration](/self-hosting/configuration#ipv6-and-dual-stack):
 
 ```
-A   app.example.com   →   your-machine-ip
+# IPv4 (default)
+A      app.example.com   →   your-ipv4-address
+
+# IPv6
+AAAA   app.example.com   →   your-ipv6-address
+
+# Dual-stack (both)
+A      app.example.com   →   your-ipv4-address
+AAAA   app.example.com   →   your-ipv6-address
 ```
 
 <Note>

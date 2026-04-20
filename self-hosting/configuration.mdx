@@ -14,7 +14,9 @@ curl -fsSL install.nixopus.com | sudo DOMAIN=panel.example.com ADMIN_EMAIL=admin
 | Variable | Default | Description |
 | --- | --- | --- |
 | `DOMAIN` | *(empty — IP mode)* | Domain for automatic HTTPS |
-| `HOST_IP` | *(auto-detected)* | Public IP of the machine |
+| `HOST_IP` | *(auto-detected)* | Public IPv4 address of the machine |
+| `HOST_IP6` | *(auto-detected in dual mode)* | Public IPv6 address of the machine. Only populated when `IP_FAMILY` is `dual`. |
+| `IP_FAMILY` | `ipv4` | IP family: `ipv4`, `ipv6`, or `dual`. Controls which address(es) the installer detects and which DNS record types are shown. |
 | `CADDY_HTTP_PORT` | `80` | HTTP port |
 | `CADDY_HTTPS_PORT` | `443` | HTTPS port |
 | `ADMIN_EMAIL` | *(empty)* | Admin account email. When set, the installer pre-creates the admin via the auth API after services start. |
@@ -175,11 +177,31 @@ nixopus restart
 
 When you provide a `DOMAIN`, Caddy automatically obtains and renews TLS certificates from Let's Encrypt. For this to work:
 
-1. **DNS A record** must point to your machine's public IP *before* installing.
+1. **DNS record** must point to your machine's public IP *before* installing — an A record for IPv4, AAAA for IPv6, or both for dual-stack.
 2. **Port 80 must be open** — Let's Encrypt uses HTTP-01 challenges on port 80, even if you only serve on 443.
 3. **Not behind a proxy** — If using Cloudflare, set to "DNS only" (grey cloud) during initial setup so the challenge can reach your machine directly. You can re-enable proxying after the first certificate is issued.
 
 Without a `DOMAIN`, Nixopus runs in IP mode over plain HTTP.
+
+### IPv6 and dual-stack
+
+Set `IP_FAMILY` to control which IP address(es) the installer detects and which DNS records are required:
+
+| `IP_FAMILY` | Detected addresses | Required DNS |
+| --- | --- | --- |
+| `ipv4` (default) | IPv4 only | A record |
+| `ipv6` | IPv6 only | AAAA record |
+| `dual` | Both IPv4 and IPv6 | A + AAAA records |
+
+```bash
+# IPv6-only install
+curl -fsSL install.nixopus.com | sudo IP_FAMILY=ipv6 DOMAIN=panel.example.com bash
+
+# Dual-stack install
+curl -fsSL install.nixopus.com | sudo IP_FAMILY=dual DOMAIN=panel.example.com bash
+```
+
+In `dual` mode, the installer stores both `HOST_IP` (IPv4) and `HOST_IP6` (IPv6) in the `.env` file. The completion banner shows both A and AAAA record instructions.
 
 ## Viewing secrets
 
