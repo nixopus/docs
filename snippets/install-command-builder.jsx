@@ -143,7 +143,7 @@ export const InstallCommandBuilder = () => {
   );
 
   return (
-    <div className="not-prose space-y-5">
+    <div className="install-command-builder not-prose space-y-5">
       {/* Access mode */}
       <div className={cardStyle}>
         <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-3">Access mode</div>

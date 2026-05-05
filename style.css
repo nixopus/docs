@@ -33,3 +33,27 @@
 .dark #sidebar-content {
   scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
 }
+
+/*
+ * Mintlify toggles dark mode with a `.dark` class on the document, not only
+ * prefers-color-scheme. Tailwind `dark:` utilities often follow the media query,
+ * so form controls can inherit light page text on a light UA input background.
+ */
+.dark .install-command-builder input:not([type="checkbox"]):not([type="radio"]),
+.dark .install-command-builder select,
+.dark .install-command-builder textarea {
+  background-color: #18181b;
+  color: #f4f4f5;
+  border-color: #3f3f46;
+  color-scheme: dark;
+}
+
+.dark .install-command-builder input::placeholder,
+.dark .install-command-builder textarea::placeholder {
+  color: #71717a;
+}
+
+.dark .install-command-builder select option {
+  background-color: #18181b;
+  color: #f4f4f5;
+}
