@@ -35,25 +35,60 @@
 }
 
 /*
- * Mintlify toggles dark mode with a `.dark` class on the document, not only
+ * Mintlify toggles dark mode with a `.dark` ancestor, not only
  * prefers-color-scheme. Tailwind `dark:` utilities often follow the media query,
- * so form controls can inherit light page text on a light UA input background.
+ * and global form resets can still beat plain utilities on native controls.
+ * !important wins over Mintlify's prose/layout form styles where they overlap.
  */
-.dark .install-command-builder input:not([type="checkbox"]):not([type="radio"]),
-.dark .install-command-builder select,
-.dark .install-command-builder textarea {
-  background-color: #18181b;
-  color: #f4f4f5;
-  border-color: #3f3f46;
+.dark .install-command-builder {
   color-scheme: dark;
+}
+
+.dark .install-command-builder input:not([type="checkbox"]):not([type="radio"]),
+.dark .install-command-builder textarea {
+  background-color: #18181b !important;
+  color: #f4f4f5 !important;
+  border-color: #3f3f46 !important;
+  color-scheme: dark;
+  -webkit-text-fill-color: #f4f4f5 !important;
+  caret-color: #f4f4f5;
+}
+
+.dark .install-command-builder select {
+  background-color: #18181b !important;
+  color: #f4f4f5 !important;
+  border-color: #3f3f46 !important;
+  color-scheme: dark;
+  -webkit-text-fill-color: #f4f4f5 !important;
+  caret-color: #f4f4f5;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.65rem center !important;
+  background-size: 1rem !important;
+  padding-right: 2.25rem !important;
 }
 
 .dark .install-command-builder input::placeholder,
 .dark .install-command-builder textarea::placeholder {
-  color: #71717a;
+  color: #71717a !important;
+  opacity: 1;
+  -webkit-text-fill-color: #71717a !important;
 }
 
 .dark .install-command-builder select option {
   background-color: #18181b;
   color: #f4f4f5;
+}
+
+.dark .install-command-builder input:-webkit-autofill,
+.dark .install-command-builder input:-webkit-autofill:hover,
+.dark .install-command-builder input:-webkit-autofill:focus,
+.dark .install-command-builder textarea:-webkit-autofill,
+.dark .install-command-builder textarea:-webkit-autofill:hover,
+.dark .install-command-builder textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f4f4f5 !important;
+  box-shadow: 0 0 0 1000px #18181b inset !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
