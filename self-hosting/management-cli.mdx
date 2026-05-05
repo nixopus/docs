@@ -25,9 +25,30 @@ sudo nixopus status
 | `nixopus ip set <ip>` | Change host IP |
 | `nixopus port set <http\|https\|ssh> <port>` | Change a port |
 | `nixopus backup` | Backup database and config |
+| `nixopus report` | Print a paste-friendly support bundle (redacted `.env`, recent logs) — [details below](#support-report) |
 | `nixopus admin-bootstrap [email] [password]` | Create the initial admin via the auth API |
 | `nixopus uninstall` | Remove containers (keeps data) |
 | `nixopus uninstall --purge` | Remove everything including data |
+
+## Support report
+
+<a id="support-report" />
+
+Use **`sudo nixopus report`** when you need to share diagnostics (forum, GitHub, support). It prints:
+
+- The last part of **`/opt/nixopus/install.log`** (if present)
+- OS / kernel (`uname`, `/etc/os-release`)
+- A short `docker version` summary
+- `docker compose ps -a`
+- The last 120 lines of **all** service logs
+- A **redacted** copy of `.env` (passwords, database/redis URLs, API keys replaced with `<redacted>`)
+
+```bash
+sudo nixopus report
+sudo nixopus report > /tmp/nixopus-report.txt
+```
+
+Raw **`install.log`** may still contain secrets that appeared on the terminal during install — prefer `nixopus report` when possible, or edit **`install.log`** before sending.
 
 ## Services
 

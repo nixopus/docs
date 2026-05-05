@@ -9,6 +9,16 @@ All parameters are optional. Pass them as environment variables before the insta
 curl -fsSL install.nixopus.com | sudo DOMAIN=panel.example.com ADMIN_EMAIL=admin@example.com bash
 ```
 
+<Note>
+  On some systems, `sudo` strips environment variables when you pipe the script (`curl … | sudo VAR=value bash`), so options like `ADMIN_EMAIL` or `LLM_PROVIDER` may not apply. If that happens, export in a nested shell so the same `bash` that runs the installer sees them:
+
+  ```bash
+  sudo bash -c 'export ADMIN_EMAIL=admin@example.com ADMIN_PASSWORD="ChangeMe!23" LLM_PROVIDER=anthropic; export ANTHROPIC_API_KEY=sk-ant-xxxxx; curl -fsSL install.nixopus.com | bash'
+  ```
+
+  Run `curl -fsSL install.nixopus.com | sudo bash -s -- --help` on the server for the full installer help, including this pattern.
+</Note>
+
 ## Environment variables
 
 | Variable | Default | Description |

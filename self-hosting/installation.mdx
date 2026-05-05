@@ -84,6 +84,22 @@ Other Linux distributions may work if Docker and Compose V2 are already installe
   </Step>
 </Steps>
 
+## Installer log
+
+The installer saves everything printed to the terminal to **`/opt/nixopus/install.log`** (mode `600`) when the install directory exists. If the installer fails before that directory is created, the transcript stays under **`/tmp/nixopus-install-*.log`** — the failure message prints the path.
+
+The log can include passwords or API keys if they appear in the output. Review and redact before sharing.
+
+For a single paste-friendly bundle **with secrets stripped from `.env`** (and recent compose logs), run:
+
+```bash
+sudo nixopus report
+# optional: save to a file
+sudo nixopus report > /tmp/nixopus-report.txt
+```
+
+See [Management CLI — report](/self-hosting/management-cli#support-report) and [Troubleshooting](/self-hosting/troubleshooting#reporting-an-issue-install-or-runtime).
+
 ## What the installer modifies
 
 Everything the installer touches outside of `$NIXOPUS_HOME` (`/opt/nixopus` by default):

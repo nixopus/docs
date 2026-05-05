@@ -4,6 +4,29 @@ description: "Common issues and fixes for self-hosted Nixopus."
 ---
 
 <AccordionGroup>
+  <Accordion title="Reporting an issue (install or runtime)" id="reporting-an-issue-install-or-runtime">
+    **Goal:** Give others enough context without leaking secrets.
+
+    1. **After a successful or failed install**, check for **`/opt/nixopus/install.log`** — it is a full transcript of the installer output. Early failures may leave the log only under **`/tmp/nixopus-install-*.log`** (the installer prints the path).
+    2. **Preferred:** run a redacted bundle from the host:
+
+       ```bash
+       sudo nixopus report
+       # or save to a file:
+       sudo nixopus report > /tmp/nixopus-report.txt
+       ```
+
+       This replaces sensitive `.env` values in the output; [Management CLI](/self-hosting/management-cli#support-report) describes exactly what is included.
+
+    3. **Manual capture:** you can also redirect the whole install:
+
+       ```bash
+       curl -fsSL install.nixopus.com | sudo bash 2>&1 | tee nixopus-install.txt
+       ```
+
+    Review any raw log for passwords or API keys before sharing.
+  </Accordion>
+
   <Accordion title="Services fail to start after reinstall">
     **Symptom:** `nixopus-auth` or `nixopus-api` crash-loop with database authentication errors.
 
